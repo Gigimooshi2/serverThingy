@@ -1,5 +1,5 @@
 import { Router } from 'express';
-
+import { SoldierModel } from '../models/SoldierModel.js';
 var router = Router();
 
 // middleware that is specific to this router
@@ -8,6 +8,12 @@ router.use(function timeLog (req, res, next) {
   next()
 })
 // define the home page route
+router.post('/add', function (req, res) {
+  const soldier = req.body;
+  SoldierModel.
+  res.send('Birds home page')
+})
+
 router.get('/', function (req, res) {
   
   res.send('Birds home page')

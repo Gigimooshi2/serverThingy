@@ -1,5 +1,5 @@
 import { DatabaseService } from "./services/DatabaseService.js"
-import AuthRoute from './routes/AuthRoute.js';
+import SoldierRoute from './routes/SoldierRoute.js';
 import {SoldierModel}  from './models/SoldierModel.js';
 
 export default class API {
@@ -22,6 +22,6 @@ export default class API {
         SoldierModel.sync();
 
         // Init routes
-        app.use(AuthRoute);
+        app.use("/soldiers", SoldierRoute);
     }
 }
