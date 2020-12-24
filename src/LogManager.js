@@ -25,7 +25,7 @@ const productionFormat = format.combine(
 export default class LogManager {
     static logger;
 
-    static getLoggerInstance(properties) {
+    static init(properties) {
         if (LogManager.logger == undefined) {
             const logLevel = properties.get('logging.winston.level');
             const dir = properties.get('logging.winston.dir');
@@ -56,9 +56,13 @@ export default class LogManager {
         return LogManager.logger;
     }
 
+    static getLogger() {
+        return LogManager.logger;
+    }
+
     static bindExpressApp(expressApp, properties) {
         // Init in case the log manager hasn't been initalized yet
-        LogManager.getLoggerInstance(properties);
+        LogManager.init(properties);
 
         LogManager.logger.errStream = {
             write: function(message, encoding){

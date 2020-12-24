@@ -1,3 +1,6 @@
+import { DatabaseService } from "./services/DatabaseService.js"
+import AuthRoute from './routes/AuthRoute.js';
+
 export default class API {
     /**
      * This method should start the building of the API over
@@ -11,10 +14,16 @@ export default class API {
      */
     build(app, properties) {
         // Init services
+        DatabaseService.init(properties)
 
-        // Init middlewares
+        // Init db models
+        // UserModel.initialize(DatabaseService.getSequelize());
+        // EmailCredentialsModel.initialize(this.core.getDatabase().getSequelize());
+        // UserModel.hasOne(EmailCredentialsModel);
+        // UserModel.sync();
+        // EmailCredentialsModel.sync();
 
         // Init routes
-
+        app.use(AuthRoute);
     }
 }

@@ -27,7 +27,7 @@ export class Application {
         this.loggger = LogManager.bindExpressApp(this.expressApp, properties);
         this.setupErrorHandler();
         this.api = new API();
-        this.api.build(this.expressApp);
+        this.api.build(this.expressApp, this.properties);
     }
 
     /**

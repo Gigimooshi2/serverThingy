@@ -13,7 +13,7 @@ import LogManager from './LogManager.js';
  */
 try {
     // Getting and intializing the main logger
-    var logger = LogManager.getLoggerInstance(properties);
+    var logger = LogManager.init(properties);
 
     try {
         var application = new Application(properties);

@@ -13,14 +13,14 @@ export class ProcessHandler {
          */
         process.on('exit', (code) => {
             logger.info('Process exit event with code: ', code);
-            await onExit();
+            onExit();
             process.exit(code);
         });
 
         // Catch signals to the process
         const singnalHandler = (signal) => {
             logger.info(`Received signal ${signal}`);
-            await onExit();
+            onExit();
             process.exit(ERR_EXIT_CODE);
         }
 
@@ -35,7 +35,7 @@ export class ProcessHandler {
          */
         process.on('uncaughtException', (err, origin) => {
             logger.error( `Caught exception: ${err}\n` + `Exception origin: ${origin}`);
-            await onExit();
+            onExit();
             process.exit(ERR_EXIT_CODE);
         });
 
@@ -46,8 +46,8 @@ export class ProcessHandler {
          * within a turn of the event loop. 
          */
         process.on('unhandledRejection', (reason, promise) => {
-            logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
-            await onExit();
+            logger.error(`Unhandled Rejection at:${reason.stack || reason}`);
+            onExit();
             process.exit(ERR_EXIT_CODE);
         });
     }
