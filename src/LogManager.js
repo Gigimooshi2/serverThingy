@@ -66,12 +66,12 @@ export default class LogManager {
 
         LogManager.logger.errStream = {
             write: function(message, encoding){
-                logger.error(message);
+                LogManager.logger.error(message);
             }
         };
         LogManager.logger.infoStream = {
             write: function(message, encoding){
-                logger.info(message);
+                LogManager.logger.info(message);
             }
         };
 

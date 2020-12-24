@@ -4,8 +4,9 @@ import LogManager from '../LogManager.js';
 
 var router = Router();
 
-router.post('/add', function (req, res) {
+router.post('/add', async function (req, res) {
   const soldier = req.body;
+  console.log(req.body);
 
   try {
     const soldierCollection = await SoldierModel
@@ -15,10 +16,10 @@ router.post('/add', function (req, res) {
                 wasVaccinated: false,
                 wasArrived: false,
                 isAbleToVaccinate: false,
-                q1: '',
-                q2: '',
-                q3: '',
-                q4: ''
+                q1: false,
+                q2: false,
+                q3: false,
+                q4: false
               });
       res.status(201).send(soldierCollection);
   } catch(e) {
@@ -27,7 +28,7 @@ router.post('/add', function (req, res) {
   }
 });
 
-router.put('/:soldierId/vaccination_ability', function (req, res) {
+router.put('/:soldierId/vaccination_ability',async function (req, res) {
   const soldierId = req.params.soldierId;
   const able = req.body.isAbleToVaccinate;
 
@@ -53,7 +54,7 @@ router.put('/:soldierId/vaccination_ability', function (req, res) {
   }
 });
 
-router.put('/:soldierId/arrival', function (req, res) {
+router.put('/:soldierId/arrival', async function (req, res) {
   const soldierId = req.params.soldierId;
   const arrivalTime = req.body.arrivalTime;
 
@@ -77,7 +78,7 @@ router.put('/:soldierId/arrival', function (req, res) {
   }
 });
 
-router.put('/:soldierId/was_vaccinated', function (req, res) {
+router.put('/:soldierId/was_vaccinated', async function (req, res) {
   const soldierId = req.params.soldierId;
   const wasVaccinated = req.body.wasVaccinated;
 
@@ -101,7 +102,7 @@ router.put('/:soldierId/was_vaccinated', function (req, res) {
   }
 });
 
-router.put('/:soldierId/answer_questions', function (req, res) {
+router.put('/:soldierId/answer_questions', async function (req, res) {
   const soldierId = req.params.soldierId;
   const q1 = req.body.q1;
   const q2 = req.body.q2;

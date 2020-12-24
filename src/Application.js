@@ -5,6 +5,7 @@ import Cors from 'cors';
 import Helmet from 'helmet';
 import RateLimit from 'express-rate-limit';
 import API from './API.js';
+import BodyParser from 'body-parser';
 
 /**
  * This is the main class of the api.
@@ -20,7 +21,10 @@ export class Application {
         this.expressApp.use(Compression());
         this.expressApp.use(Helmet());
         this.expressApp.use(Cors());
-        this.expressApp.expressApp(Express.json());
+        // parse application/x-www-form-urlencoded
+        this.expressApp.use(BodyParser.urlencoded({ extended: false }))
+        // parse application/json
+        this.expressApp.use(BodyParser.json())
         this.expressApp.use(RateLimit({
             windowMs: properties.get('security.rate_limit.window'),
             max: properties.get('security.rate_limit.maxRequests')
