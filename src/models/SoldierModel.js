@@ -1,5 +1,5 @@
-import pkg from 'sequelize';
-const { Model, DataTypes } = pkg;
+import sequelize_pkg from 'sequelize';
+const { Model, DataTypes } = sequelize_pkg;
 
 
 export class SoldierModel extends Model {

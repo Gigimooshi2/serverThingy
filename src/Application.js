@@ -20,6 +20,7 @@ export class Application {
         this.expressApp.use(Compression());
         this.expressApp.use(Helmet());
         this.expressApp.use(Cors());
+        this.expressApp.expressApp(Express.json());
         this.expressApp.use(RateLimit({
             windowMs: properties.get('security.rate_limit.window'),
             max: properties.get('security.rate_limit.maxRequests')
