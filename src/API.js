@@ -17,11 +17,8 @@ export default class API {
         DatabaseService.init(properties)
 
         // Init db models
-        // UserModel.initialize(DatabaseService.getSequelize());
-        // EmailCredentialsModel.initialize(this.core.getDatabase().getSequelize());
-        // UserModel.hasOne(EmailCredentialsModel);
-        // UserModel.sync();
-        // EmailCredentialsModel.sync();
+        SoldierModel.initialize(DatabaseService.getSequelize());
+        SoldierModel.sync();
 
         // Init routes
         app.use(AuthRoute);
