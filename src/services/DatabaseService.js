@@ -32,8 +32,8 @@ export class DatabaseService {
 		);
 	}
 
-	getSequelize() {
-		return this.sequelize;
+	static getSequelize() {
+		return DatabaseService.instance.sequelize;
 	}
 
 	static init(properties) {
@@ -46,8 +46,7 @@ export class DatabaseService {
 	}
 
 	static testConnection() {
-		DatabaseService.instance
-			.getSequelize()
+		DatabaseService.getSequelize()
 			.authenticate()
 			.then(() => {
 				LogManger.getLogger().info(

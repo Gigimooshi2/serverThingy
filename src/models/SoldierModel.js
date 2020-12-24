@@ -1,4 +1,6 @@
-import { Model, DataTypes } from "sequelize";
+import pkg from 'sequelize';
+const { Model, DataTypes } = pkg;
+
 
 export class SoldierModel extends Model {
 	static isInitialized = false;
