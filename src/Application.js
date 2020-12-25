@@ -62,7 +62,7 @@ export class Application {
      * The port of the server is taken from the application properties.
      */
     start() {
-        const port = this.properties.get('main.app.port');
+        const port =  this.properties.get('main.app.port');
         const logger = this.loggger;
         this.server = this.expressApp.listen(port, () => {
             logger.info("The application has been launched on port " + port)
