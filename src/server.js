@@ -13,11 +13,11 @@ import LogManager from './LogManager.js';
  */
 try {
     // Getting and intializing the main logger
-    var logger = LogManager.init(properties);
+    const logger = LogManager.init(properties);
 
     try {
-        var application = new Application(properties);
-        var processHandler = new ProcessHandler();
+        const application = new Application(properties);
+        const processHandler = new ProcessHandler();
         
         // Launch the app
         application.start();
