@@ -1,6 +1,7 @@
 import { DatabaseService } from "./services/DatabaseService.js"
 import SoldierRoute from './routes/SoldierRoute.js';
 import {SoldierModel}  from './models/SoldierModel.js';
+import {WaitingSoldiersQueue} from './models/WaitingSoldiersQueue.js'
 
 export default class API {
     /**
@@ -21,6 +22,9 @@ export default class API {
         SoldierModel.initialize(DatabaseService.getSequelize());
         SoldierModel.sync();
 
+        WaitingSoldiersQueue.initialize(DatabaseService.getSequelize());
+        WaitingSoldiersQueue.sync();
+        WaitingSoldiersQueue.createStages(5);
         // Init routes
         app.use("/soldiers", SoldierRoute);
     }

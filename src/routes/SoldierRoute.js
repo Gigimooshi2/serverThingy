@@ -4,23 +4,45 @@ import LogManager from '../LogManager.js';
 
 var router = Router();
 
-router.post('/add', async function (req, res) {
+router.post('/addSoliderToArrivalQueue', async function (req, res) {
   const soldier = req.body;
   console.log(req.body);
-
   try {
     const soldierCollection = await SoldierModel
               .create({
                 soldierId: soldier.soldierId,
-                arrivalTime: '0',
+                arrivalTime: soldier.arrivalTime,
                 wasVaccinated: false,
                 wasArrived: false,
                 isAbleToVaccinate: false,
-                q1: false,
-                q2: false,
-                q3: false,
-                q4: false
+                q1: soldier.q1,
+                q2: soldier.q2,
+                q3: soldier.q3
               });
+      res.status(201).send(soldierCollection);
+  } catch(e) {
+      LogManager.getLogger().error(e);
+      res.status(400).send(e);
+  }
+});
+router.get('/getResultGetTopSoldiers', async function (req, res) {
+  try {
+    const soldierCollection = await SoldierModel.findAll({
+      attributes: ['soldierId'],
+      limit: 50
+    }) 
+      res.status(201).send(soldierCollection);
+  } catch(e) {
+      LogManager.getLogger().error(e);
+      res.status(400).send(e);
+  }
+});
+router.get('/getResultGetTopSoldiers', async function (req, res) {
+  try {
+    const soldierCollection = await SoldierModel.findAll({
+      attributes: ['soldierId'],
+      limit: 50
+    }) 
       res.status(201).send(soldierCollection);
   } catch(e) {
       LogManager.getLogger().error(e);
@@ -107,7 +129,6 @@ router.put('/:soldierId/answer_questions', async function (req, res) {
   const q1 = req.body.q1;
   const q2 = req.body.q2;
   const q3 = req.body.q3;
-  const q4 = req.body.q4;
 
   try {
     const soldierCollection = await SoldierModel.find({
@@ -118,8 +139,7 @@ router.put('/:soldierId/answer_questions', async function (req, res) {
         const updateSoldier = await SoldierModel.update({
           q1 : q1,
           q2 : q2,
-          q3 : q3,
-          q4 : q4
+          q3 : q3
         });
 
         res.status(201).send(updateSoldier)

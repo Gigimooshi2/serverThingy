@@ -12,7 +12,6 @@ export class SoldierModel extends Model {
 	q1;
 	q2;
 	q3;
-	q4;
 
 	static initialize(sequelize) {
 		if (SoldierModel.isInitialized) {
@@ -51,10 +50,6 @@ export class SoldierModel extends Model {
 					allowNull: false,
 				},
 				q3: {
-					type: new DataTypes.BOOLEAN(),
-					allowNull: false,
-				},
-				q4: {
 					type: new DataTypes.BOOLEAN(),
 					allowNull: false,
 				}
