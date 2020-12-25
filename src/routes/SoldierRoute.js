@@ -5,6 +5,14 @@ import { CPRCountDownModel } from '../models/CPRCountDownModel.js';
 
 var router = Router();
 
+export async function vaidateSoldierId(soldierId) {
+  const soldierCollection = await SoldierModel.findOne({
+    where: { soldierId }
+  });
+  if (!soldierCollection) {
+    throw new Error('soldier not found');
+  }
+}
 router.post('/addSoldierToSoldierTable', async function (req, res) {
   const soldier = req.body;
   console.log(req.body);
@@ -32,21 +40,13 @@ router.put('/:soldierId/vaccination_ability', async function (req, res) {
   const able = req.body.isAbleToVaccinate;
 
   try {
-    const soldierCollection = await SoldierModel.find({
-      soldierId: soldierId
+    await vaidateSoldierId(soldierId);
+    const updateSoldier = await SoldierModel.update({
+      isAbleToVaccinate: able
+    }, {
+      where: { soldierId }
     });
-
-    if (soldierCollection) {
-
-      const updateSoldier = await SoldierModel.update({
-        isAbleToVaccinate: able
-      });
-
-      res.status(201).send(updateSoldier)
-
-    } else {
-      res.status(404).send("Soldier Not Found");
-    }
+    res.status(201).send(updateSoldier)
   } catch (e) {
     LogManager.getLogger().error(e);
     res.status(400).send(e);

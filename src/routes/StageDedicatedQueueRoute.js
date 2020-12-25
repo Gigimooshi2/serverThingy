@@ -40,7 +40,7 @@ router.post('/dedicateSoldierToStage', async function (req, res) {
         soldierId: topSoldier.soldierId
       }
     })
-    res.status(200).send(updateStage);
+    res.status(200).send(topSoldier.soldierId);
 
   } catch (e) {
     LogManager.getLogger().error(e);

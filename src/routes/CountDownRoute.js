@@ -7,6 +7,7 @@ const router = Router();
 router.post('/:soldierId/wasVaccinated', async function (req, res) {
   const soldierId = req.params.soldierId;
   try {
+    await vaidateSoldierId(soldierId);
     const countDown = await CPRCountDownModel.create({ soldierId });
     res.status(201).send(countDown)
   } catch (e) {
@@ -24,7 +25,7 @@ router.get('/getAllCountdowns', async function (req, res) {
       }
     );
     const now = Date.now();
-    const countDownTime = 1 * 1000 * 60;
+    const countDownTime = 15 * 1000 * 60;
     const deleteCountdownTime = countDownTime * 2;
     const allCountDowns = [];
     soldiers.forEach(soldier => {
