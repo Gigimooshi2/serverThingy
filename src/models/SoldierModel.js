@@ -5,7 +5,7 @@ const { Model, DataTypes } = sequelize_pkg;
 export class SoldierModel extends Model {
 	static isInitialized = false;
 	soldierId;
-    arrivalTime;
+	arrivalTime;
 	wasVaccinated;
 	wasArrived;
 	isAbleToVaccinate;
@@ -24,11 +24,11 @@ export class SoldierModel extends Model {
 					type: DataTypes.STRING(10),
 					primaryKey: true,
 					allowNull: false,
-                },
+				},
 				arrivalTime: {
 					type: DataTypes.BIGINT.UNSIGNED,
 					allowNull: false,
-                },
+				},
 				wasVaccinated: {
 					type: new DataTypes.BOOLEAN,
 					allowNull: false,
@@ -40,7 +40,7 @@ export class SoldierModel extends Model {
 				isAbleToVaccinate: {
 					type: new DataTypes.BOOLEAN,
 					allowNull: false,
-                },
+				},
 				q1: {
 					type: new DataTypes.BOOLEAN(),
 					allowNull: false,

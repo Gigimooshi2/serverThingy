@@ -25,7 +25,7 @@ router.get('/getResultGetTopSoldiers', async function (req, res) {
       attributes: ['soldierId'],
       limit: 50
     }) 
-      res.status(201).send(soldierCollection);
+      res.status(200).send(soldierCollection);
   } catch(e) {
       LogManager.getLogger().error(e);
       res.status(400).send(e);
