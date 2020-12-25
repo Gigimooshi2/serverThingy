@@ -37,6 +37,7 @@ export class DatabaseService {
 	}
 
 	static init(properties) {
+		console.log(JSON.stringify(properties));
 		if (!DatabaseService.instance) {
 			DatabaseService.instance = new DatabaseService(properties);
 			DatabaseService.testConnection();
