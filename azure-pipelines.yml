@@ -17,5 +17,5 @@ steps:
 
 - script: |
     npm install
-    npm run start-dev
+    npm run start-dev-win
   displayName: 'npm install and build'
