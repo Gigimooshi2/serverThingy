@@ -7,9 +7,9 @@ export class DatabaseService {
 
 	constructor(properties) {
 		this.sequelize = new Sequelize(
-			properties.get("database.dbName"),
-			properties.get("database.user"),
-			properties.get("database.password"),
+			properties.get("database.dbName") || process.env.DB_NAME,
+			properties.get("database.user") || process.env.USER,
+			properties.get("database.password") || process.env.PASSWORD,
 			{
 				host: properties.get("database.host"),
 				port: properties.get("database.port"),
