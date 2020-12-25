@@ -24,7 +24,7 @@ router.get('/getAllCountdowns', async function (req, res) {
       }
     );
     const now = Date.now();
-    const countDownTime = 15 * 1000 * 60;
+    const countDownTime = 1 * 1000 * 60;
     const deleteCountdownTime = countDownTime * 2;
     const allCountDowns = [];
     soldiers.forEach(soldier => {
@@ -36,7 +36,8 @@ router.get('/getAllCountdowns', async function (req, res) {
           }
         });
       } else {
-        allCountDowns.push({ soldierId: soldier.soldierId, canGo: timeCountDown >= countDownTime });
+        const waintingPrecentage = Math.floor(timeCountDown / countDownTime * 100);
+        allCountDowns.push({ soldierId: soldier.soldierId, waintingPrecentage: waintingPrecentage > 100 ? 100 : waintingPrecentage });
       }
     });
     res.status(200).send(allCountDowns);
