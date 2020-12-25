@@ -2,20 +2,20 @@ import sequelize_pkg from 'sequelize';
 const { Model, DataTypes } = sequelize_pkg;
 
 
-export class WaitingSoldiersQueue extends Model {
+export class StageDedicatedQueue extends Model {
 	static isInitialized = false;
 	soldierId;
-	stage; // 1/2
+	stageId; // 1/2
 	static createStages(amount){
 		try{
 			for(let i = 0; i<amount;i++)
 			{
-			WaitingSoldiersQueue.findOrCreate(
+			StageDedicatedQueue.findOrCreate(
 			{
 				where:{
-					stage: i,
+					stageId: i,
 				},
-				stage: i,
+				stageId: i,
 				soldierId: null
 			});
 		}
@@ -25,11 +25,11 @@ export class WaitingSoldiersQueue extends Model {
 		}
 	}
 	static initialize(sequelize) {
-		if (WaitingSoldiersQueue.isInitialized) {
+		if (StageDedicatedQueue.isInitialized) {
 			return;
 		}
 
-		WaitingSoldiersQueue.init(
+		StageDedicatedQueue.init(
 			{
 				stage: {
 					type: DataTypes.TINYINT.UNSIGNED,
@@ -47,6 +47,6 @@ export class WaitingSoldiersQueue extends Model {
 				sequelize: sequelize,
 			}
 		);
-		WaitingSoldiersQueue.isInitialized = true;
+		StageDedicatedQueue.isInitialized = true;
 	}
 }

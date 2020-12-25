@@ -5,7 +5,6 @@ const { Model, DataTypes } = sequelize_pkg;
 export class SoldierArrivalQueue extends Model {
 	static isInitialized = false;
 	soldierId;
-	stage; // 1/2
 	static initialize(sequelize) {
 		if (SoldierArrivalQueue.isInitialized) {
 			return;
@@ -15,7 +14,7 @@ export class SoldierArrivalQueue extends Model {
 			{
 				soldierId: {
 					type: DataTypes.STRING(10),
-					allowNull: true,
+					allowNull: false,
                 }
 			},
 			{

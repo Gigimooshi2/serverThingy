@@ -4,7 +4,7 @@ import LogManager from '../LogManager.js';
 
 var router = Router();
 
-router.post('/addSoliderToArrivalQueue', async function (req, res) {
+router.post('/addSoldierToSoldierTable', async function (req, res) {
   const soldier = req.body;
   console.log(req.body);
   try {
@@ -19,30 +19,6 @@ router.post('/addSoliderToArrivalQueue', async function (req, res) {
                 q2: soldier.q2,
                 q3: soldier.q3
               });
-      res.status(201).send(soldierCollection);
-  } catch(e) {
-      LogManager.getLogger().error(e);
-      res.status(400).send(e);
-  }
-});
-router.get('/getResultGetTopSoldiers', async function (req, res) {
-  try {
-    const soldierCollection = await SoldierModel.findAll({
-      attributes: ['soldierId'],
-      limit: 50
-    }) 
-      res.status(201).send(soldierCollection);
-  } catch(e) {
-      LogManager.getLogger().error(e);
-      res.status(400).send(e);
-  }
-});
-router.get('/getResultGetTopSoldiers', async function (req, res) {
-  try {
-    const soldierCollection = await SoldierModel.findAll({
-      attributes: ['soldierId'],
-      limit: 50
-    }) 
       res.status(201).send(soldierCollection);
   } catch(e) {
       LogManager.getLogger().error(e);
