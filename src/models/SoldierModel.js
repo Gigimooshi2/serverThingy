@@ -1,4 +1,5 @@
 import sequelize_pkg from 'sequelize';
+import { QuestinAnswer } from '../routes/SoldierRoute.js';
 const { Model, DataTypes } = sequelize_pkg;
 
 
@@ -12,6 +13,7 @@ export class SoldierModel extends Model {
 	q1;
 	q2;
 	q3;
+	q4;
 
 	static initialize(sequelize) {
 		if (SoldierModel.isInitialized) {
@@ -51,6 +53,10 @@ export class SoldierModel extends Model {
 				},
 				q3: {
 					type: new DataTypes.BOOLEAN(),
+					allowNull: false,
+				},
+				q4: {
+					type: DataTypes.ENUM(Object.values(QuestinAnswer)),
 					allowNull: false,
 				}
 			},
