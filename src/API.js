@@ -1,7 +1,12 @@
 import { DatabaseService } from "./services/DatabaseService.js"
 import SoldierRoute from './routes/SoldierRoute.js';
-import { SoldierModel } from './models/SoldierModel.js';
-import { WaitingSoldiersQueue } from './models/WaitingSoldiersQueue.js'
+import ArrivalQueueRoute from './routes/ArrivalQueueRoute.js';
+import StageDedicatedQueueRoute from './routes/StageDedicatedQueueRoute.js';
+import CountDownRoute from './routes/CountDownRoute.js';
+import {SoldierModel}  from './models/SoldierModel.js';
+import {StageDedicatedQueue} from './models/StageDedicatedQueue.js'
+import { SoldierArrivalQueue } from "./models/SoldierArrivalQueue.js";
+import { CPRCountDownModel } from "./models/CPRCountDownModel.js";
 
 export default class API {
     /**
@@ -22,10 +27,19 @@ export default class API {
         await SoldierModel.initialize(DatabaseService.getSequelize());
         await SoldierModel.sync();
 
-        await WaitingSoldiersQueue.initialize(DatabaseService.getSequelize());
-        await WaitingSoldiersQueue.sync();
-        await WaitingSoldiersQueue.createStages(5);
+        await SoldierArrivalQueue.initialize(DatabaseService.getSequelize());
+        await SoldierArrivalQueue.sync();
+
+        await StageDedicatedQueue.initialize(DatabaseService.getSequelize());
+        await StageDedicatedQueue.sync()
+        await StageDedicatedQueue.createStages(5);
+        
+        await CPRCountDownModel.initialize(DatabaseService.getSequelize());
+        await CPRCountDownModel.sync();
         // Init routes
-        app.use("/soldiers", SoldierRoute);
+        app.use("/", SoldierRoute);
+        app.use("/", ArrivalQueueRoute);
+        app.use("/", StageDedicatedQueueRoute);
+        app.use("/", CountDownRoute);
     }
 }
