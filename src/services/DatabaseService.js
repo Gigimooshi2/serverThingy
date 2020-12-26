@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize";
+import Sequelize from "sequelize";
 import LogManger from "../LogManager.js";
 
 export class DatabaseService {

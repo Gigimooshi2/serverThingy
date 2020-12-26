@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import Router from 'express';
 import {SoldierArrivalQueue} from '../models/SoldierArrivalQueue.js';
 import LogManager from '../LogManager.js';
 

@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import Router from 'express';
 import LogManager from '../LogManager.js';
 import { CPRCountDownModel } from '../models/CPRCountDownModel.js';
 

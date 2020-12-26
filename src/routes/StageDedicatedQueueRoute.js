@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import Router from 'express';
 import { StageDedicatedQueue } from '../models/StageDedicatedQueue.js';
 import LogManager from '../LogManager.js';
 import { SoldierArrivalQueue } from '../models/SoldierArrivalQueue.js';

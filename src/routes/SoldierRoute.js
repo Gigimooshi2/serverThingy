@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import Router from 'express';
 import { SoldierModel } from '../models/SoldierModel.js';
 import LogManager from '../LogManager.js';
 import { CPRCountDownModel } from '../models/CPRCountDownModel.js';

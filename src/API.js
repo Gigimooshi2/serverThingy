@@ -29,9 +29,9 @@ export default class API {
 
         await SoldierArrivalQueue.initialize(DatabaseService.getSequelize());
         await SoldierArrivalQueue.sync();
-        
+
         await StageDedicatedQueue.initialize(DatabaseService.getSequelize());
-        await StageDedicatedQueue.sync();
+        await StageDedicatedQueue.sync()
         await StageDedicatedQueue.createStages(5);
         
         await CPRCountDownModel.initialize(DatabaseService.getSequelize());
