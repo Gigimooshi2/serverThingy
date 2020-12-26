@@ -17,7 +17,6 @@ export const vaidateSoldierId = async (soldierId) => {
 
 router.post('/addSoldierToSoldierTable', async function (req, res) {
   const soldier = req.body;
-  console.log(req.body);
   try {
     const soldierCollection = await SoldierModel
       .create({
