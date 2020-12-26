@@ -7,8 +7,6 @@ import RateLimit from 'express-rate-limit';
 import API from './API.js';
 import BodyParser from 'body-parser';
 
-// Checking CI-CD
-
 /**
  * This is the main class of the api.
  * <p>
