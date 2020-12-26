@@ -1,7 +1,7 @@
 import Router from 'express';
 import LogManager from '../LogManager.js';
 import { CPRCountDownModel } from '../models/CPRCountDownModel.js';
-
+import { vaidateSoldierId } from './SoldierRoute.js'
 const router = Router();
 
 router.post('/:soldierId/wasVaccinated', async function (req, res) {
