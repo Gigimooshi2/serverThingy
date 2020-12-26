@@ -36,7 +36,7 @@ router.post('/addSoldierToSoldierTable', async function (req, res) {
   }
 });
 
-router.get('soldierInfo/:soldierId', async function (req, res) {
+router.get('/soldierInfo/:soldierId', async function (req, res) {
   const soldierId = req.params.soldierId;
   try {
     const soldierCollection = await SoldierModel.findOne({
