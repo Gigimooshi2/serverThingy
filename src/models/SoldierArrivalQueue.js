@@ -18,7 +18,7 @@ export class SoldierArrivalQueue extends Model {
 					allowNull: false,
                 },
 				turnPos:{
-					type: DataTypes.SMALLINT.UNSIGNED
+					type: DataTypes.FLOAT
 				}
 			},
 			{
