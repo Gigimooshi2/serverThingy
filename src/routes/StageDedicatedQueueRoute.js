@@ -24,7 +24,7 @@ router.post('/dedicateSoldierToStage', async function (req, res) {
       limit: 1,
       raw: true,
       order: [
-        ['id', 'DESC'],
+        ['soldierId', 'DESC'],
       ]
     })
     const updateStage = await StageDedicatedQueue.update({

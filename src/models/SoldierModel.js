@@ -6,7 +6,6 @@ const { Model, DataTypes } = sequelize_pkg;
 export class SoldierModel extends Model {
 	static isInitialized = false;
 	soldierId;
-	arrivalTime;
 	wasVaccinated;
 	wasArrived;
 	isAbleToVaccinate;
@@ -25,10 +24,6 @@ export class SoldierModel extends Model {
 				soldierId: {
 					type: DataTypes.STRING(10),
 					primaryKey: true,
-					allowNull: false,
-				},
-				arrivalTime: {
-					type: DataTypes.BIGINT.UNSIGNED,
 					allowNull: false,
 				},
 				wasVaccinated: {
@@ -56,7 +51,7 @@ export class SoldierModel extends Model {
 					allowNull: false,
 				},
 				q4: {
-					type: DataTypes.ENUM(Object.values(QuestinAnswer)),
+					type: DataTypes.ENUM(Object.keys(QuestinAnswer)),
 					allowNull: false,
 				}
 			},
