@@ -4,7 +4,7 @@ import { SoldierModel } from '../models/SoldierModel.js';
 
 export const router = Router();
 
-export const QuestinAnswer = Object.freeze({ "yes": 'כן', "no": 'לא', "first": 'חיסון קורונה ראשון' })
+export const QuestinAnswer = Object.freeze({ "yes": 0, "no": 1, "first": 2 })
 
 export const vaidateSoldierId = async (soldierId) => {
   const soldierCollection = await SoldierModel.findOne({
@@ -28,9 +28,25 @@ router.post('/addSoldierToSoldierTable', async function (req, res) {
         q1: soldier.q1,
         q2: soldier.q2,
         q3: soldier.q3,
-        q4: QuestinAnswer[soldier.q4]
+        q4: soldier.q4
       });
     res.status(201).send(soldierCollection);
+  } catch (e) {
+    LogManager.getLogger().error(e);
+    res.status(400).send(e);
+  }
+});
+
+router.get('soldierInfo/:soldierId', async function (req, res) {
+  const soldierId = req.params.soldierId;
+  try {
+    const soldierCollection = await SoldierModel.findOne({
+      where: { soldierId }
+    });
+    if (!soldierCollection) {
+      throw new Error('soldier not found');
+    }
+    res.status(200).send(soldierCollection)
   } catch (e) {
     LogManager.getLogger().error(e);
     res.status(400).send(e);
@@ -92,7 +108,7 @@ router.put('/:soldierId/answer_questions', async function (req, res) {
   const q1 = req.body.q1;
   const q2 = req.body.q2;
   const q3 = req.body.q3;
-  const q4 = QuestinAnswer[req.body.q4];
+  const q4 = req.body.q4;
 
   try {
     await vaidateSoldierId(soldierId);

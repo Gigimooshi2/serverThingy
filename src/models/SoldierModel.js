@@ -56,7 +56,7 @@ export class SoldierModel extends Model {
 					allowNull: false,
 				},
 				q4: {
-					type: DataTypes.ENUM(Object.values(QuestinAnswer)),
+					type: DataTypes.ENUM(Object.keys(QuestinAnswer)),
 					allowNull: false,
 				}
 			},
