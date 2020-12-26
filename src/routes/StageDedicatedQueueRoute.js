@@ -17,6 +17,20 @@ router.get('/GetStageDedicatedSoldiers', async function (req, res) {
   }
 });
 
+router.get('/:stageId/getSoldierDedicatedToStage', async function (req, res) {
+  const stageId = req.params.stageId;
+  try {
+    const currentSoldier = await StageDedicatedQueue.findOne({
+      attributes: ['soldierId'],
+      raw:true
+    },{where:{stageId}}) 
+      res.status(200).send(currentSoldier);
+  } catch(e) {
+      LogManager.getLogger().error(e);
+      res.status(400).send(e);
+  }
+});
+
 router.post('/dedicateSoldierToStage', async function (req, res) {
   const stage = req.body;
   try {
