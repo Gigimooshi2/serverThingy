@@ -21,7 +21,6 @@ router.post('/addSoldierToSoldierTable', async function (req, res) {
     const soldierCollection = await SoldierModel
       .create({
         soldierId: soldier.soldierId,
-        arrivalTime: soldier.arrivalTime,
         wasVaccinated: false,
         wasArrived: false,
         isAbleToVaccinate: false,
@@ -49,22 +48,6 @@ router.put('/:soldierId/vaccination_ability', async function (req, res) {
       where: { soldierId }
     });
     res.status(200).send(updateSoldier)
-  } catch (e) {
-    LogManager.getLogger().error(e);
-    res.status(400).send(e);
-  }
-});
-
-router.put('/:soldierId/arrival', async function (req, res) {
-  const soldierId = req.params.soldierId;
-  const arrivalTime = req.body.arrivalTime;
-
-  try {
-    await vaidateSoldierId(soldierId);
-    const [_, updateSoldier] = await SoldierModel.update(
-      { arrivalTime: arrivalTime }, { where: soldierId }
-    );
-    res.status(200).send(updateSoldier);
   } catch (e) {
     LogManager.getLogger().error(e);
     res.status(400).send(e);
