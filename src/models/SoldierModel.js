@@ -9,6 +9,7 @@ export class SoldierModel extends Model {
 	wasVaccinated;
 	wasArrived;
 	isAbleToVaccinate;
+	cprDone;
 	q1;
 	q2;
 	q3;
@@ -35,6 +36,10 @@ export class SoldierModel extends Model {
 					allowNull: false,
 				},
 				isAbleToVaccinate: {
+					type: new DataTypes.BOOLEAN,
+					allowNull: false,
+				},
+				cprDone: {
 					type: new DataTypes.BOOLEAN,
 					allowNull: false,
 				},
