@@ -23,6 +23,9 @@ router.get('/getResultGetTopSoldiers', async function (req, res) {
   try {
     const soldierCollection = await SoldierArrivalQueue.findAll({
       attributes: ['soldierId','turnPos'],
+      order: [
+        ['turnPos', 'ASC'],
+      ],
       limit: 50
     }) 
       res.status(200).send(soldierCollection);
