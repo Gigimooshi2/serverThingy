@@ -8,9 +8,18 @@ router.post('/addSoliderToArrivalQueue', async function (req, res) {
   const soldier = req.body;
   console.log(req.body);
   try {
+    const topSoldier = await SoldierArrivalQueue.findOne({
+      limit: 1,
+      raw: true,
+      order: [
+        ['turnPos', 'ASC'],
+      ]
+    })
+    console.log("info");
     const soldierCollection = await SoldierArrivalQueue
               .create({
                 soldierId: soldier.soldierId,
+                turnPos: topSoldier.turnPos
               });
       res.status(201).send(soldierCollection);
   } catch(e) {
