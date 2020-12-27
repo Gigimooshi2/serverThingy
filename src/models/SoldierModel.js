@@ -15,6 +15,7 @@ export class SoldierModel extends Model {
 	q2;
 	q3;
 	q4;
+	q5;
 
 	static initialize(sequelize) {
 		if (SoldierModel.isInitialized) {
@@ -67,6 +68,10 @@ export class SoldierModel extends Model {
 				},
 				q4: {
 					type: DataTypes.ENUM(Object.keys(QuestinAnswer)),
+					allowNull: false,
+				},
+				q5: {
+					type: new DataTypes.BOOLEAN,
 					allowNull: false,
 				}
 			},
