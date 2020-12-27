@@ -22,9 +22,8 @@ router.get('/:stageId/getSoldierDedicatedToStage', async function (req, res) {
   try {
     const currentSoldier = await StageDedicatedQueue.findOne({
       attributes: ['soldierId'],
-      raw: true,
-      where: { stageId }
-    })
+      raw: true
+    }, { where: { stageId } })
     res.status(200).send(currentSoldier);
   } catch (e) {
     LogManager.getLogger().error(e);
