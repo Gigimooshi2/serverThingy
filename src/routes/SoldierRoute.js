@@ -4,7 +4,7 @@ import { SoldierModel } from '../models/SoldierModel.js';
 
 export const router = Router();
 
-export const QuestinAnswer = Object.freeze({ "yes": 0, "no":1, "first": 2 })
+export const QuestinAnswer = Object.freeze({ "yes": 0, "no": 1, "first": 2 })
 
 export const vaidateSoldierId = async (soldierId) => {
   const soldierCollection = await SoldierModel.findOne({
@@ -96,6 +96,11 @@ router.put('/:soldierId/was_vaccinated', async function (req, res) {
     await vaidateSoldierId(soldierId);
     const [_, updateSoldier] = await SoldierModel.update({
       wasVaccinated: wasVaccinated
+    }, {
+      where:
+      {
+        soldierId
+      } 
     });
     res.status(200).send(updateSoldier);
   } catch (e) {
