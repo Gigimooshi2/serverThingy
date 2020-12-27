@@ -47,6 +47,11 @@ export class SoldierModel extends Model {
 					defaultValue: false,
 					allowNull: false,
 				},
+				dedicatedToCPR: {
+					type: new DataTypes.BOOLEAN,
+					defaultValue: false,
+					allowNull: false,
+				},
 				q1: {
 					type: new DataTypes.BOOLEAN,
 					allowNull: false,

@@ -48,10 +48,6 @@ export default class API {
         //         await SoldierModel
         //         .create({
         //           soldierId: i,
-        //           wasVaccinated: false,
-        //           wasArrived: false,
-        //           isAbleToVaccinate: false,
-        //           cprDone: false,
         //           q1: false,
         //           q2: false,
         //           q3: false,
