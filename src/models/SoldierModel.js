@@ -10,6 +10,7 @@ export class SoldierModel extends Model {
 	wasArrived;
 	isAbleToVaccinate;
 	wasArrivedToCPRStation;
+	dedicatedToCPR;
 	q1;
 	q2;
 	q3;

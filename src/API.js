@@ -63,6 +63,6 @@ export default class API {
         app.use("/", ArrivalQueueRoute);
         app.use("/", StageDedicatedQueueRoute);
         app.use("/", CountDownRoute);
-        // app.use("/", CPRStagesRoute);
+        app.use("/", CPRStagesRoute);
     }
 }
