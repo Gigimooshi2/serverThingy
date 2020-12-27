@@ -43,6 +43,10 @@ export default class API {
 
         await CPRCountDownModel.initialize(DatabaseService.getSequelize());
         await CPRCountDownModel.sync();
+<<<<<<< HEAD
+
+=======
+>>>>>>> 41866496afc96e4f2b0213b080556e7d9f973175
         //     for(let i = 0; i<=2000; i++)
         //     {
         //         await SoldierModel
