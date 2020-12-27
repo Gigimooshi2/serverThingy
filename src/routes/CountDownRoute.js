@@ -34,13 +34,11 @@ router.put('/setWasArrivedToCprStation', async function (req, res) {
       }, {
         where: { soldierId }
       });
-      LogManager.getLogger().info(_);
       res.status(200).send(updateSoldier)
     } else {
       const turnLimit = 3;
       const iterationCounter = 1 / (turnLimit + 1);
       try {
-        await vaidateSoldierId(soldierId);
         const currentSoldier = await CPRCountDownModel.findOne({
           where: { soldierId },
           attributes: ['turnPos']
