@@ -13,6 +13,7 @@ router.put('/:soldierId/soldierDidntArrive', async function (req, res) {
 
     const currentSoldier = await SoldierArrivalQueue.findOne({
       where: { soldierId },
+      raw: true,
       attributes: ['turnPos']
     })
     const shouldGoBack = currentSoldier ? (currentSoldier.turnPos % 1).toFixed(2) != iterationCounter * turnLimit : false;

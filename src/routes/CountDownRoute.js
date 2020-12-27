@@ -41,6 +41,7 @@ router.put('/setWasArrivedToCprStation', async function (req, res) {
       try {
         const currentSoldier = await CPRCountDownModel.findOne({
           where: { soldierId },
+          raw: true,
           attributes: ['turnPos']
         });
         if ((currentSoldier.turnPos % 1).toFixed(2) != iterationCounter * turnLimit) {
@@ -84,7 +85,8 @@ router.get('/getAllCountdowns', async function (req, res) {
     const allCountDowns = [];
     await Promise.all(soldiers.map(async (soldier) => {
       const timeCountDown = now - new Date(soldier.createdAt);
-      const { wasArrivedToCPRStation } = await SoldierModel.findOne({ where: { soldierId: soldier.soldierId }, attributes: ['wasArrivedToCPRStation'] });
+      console.log( await SoldierModel.findOne({ where: { soldierId: soldier.soldierId }, raw: true }));
+      const { wasArrivedToCPRStation } = await SoldierModel.findOne({ where: { soldierId: soldier.soldierId }, raw: true, attributes: ['wasArrivedToCPRStation'] });
       if (timeCountDown > deleteCountdownTime && wasArrivedToCPRStation) {
         CPRCountDownModel.destroy({
           where: {

@@ -45,7 +45,19 @@ export default class API {
         await CPRCountDownModel.sync();
         //     for(let i = 0; i<=200; i++)
         //     {
-        //     await SoldierArrivalQueue
+        //         await SoldierModel
+        //         .create({
+        //           soldierId: i,
+        //           wasVaccinated: false,
+        //           wasArrived: false,
+        //           isAbleToVaccinate: false,
+        //           cprDone: false,
+        //           q1: false,
+        //           q2: false,
+        //           q3: false,
+        //           q4: 'yes'
+        //         });
+        //     await CPRCountDownModel
         //   .create({
         //     soldierId: i,
         //     turnPos: i

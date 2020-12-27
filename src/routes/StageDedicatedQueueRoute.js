@@ -8,12 +8,12 @@ var router = Router();
 router.get('/GetStageDedicatedSoldiers', async function (req, res) {
   try {
     const soldierCollection = await StageDedicatedQueue.findAll({
-      attributes: ['stageId','soldierId']
+      attributes: ['stageId', 'soldierId']
     })
-      res.status(200).send(soldierCollection);
-  } catch(e) {
-      LogManager.getLogger().error(e);
-      res.status(400).send(e);
+    res.status(200).send(soldierCollection);
+  } catch (e) {
+    LogManager.getLogger().error(e);
+    res.status(400).send(e);
   }
 });
 
@@ -22,12 +22,12 @@ router.get('/:stageId/getSoldierDedicatedToStage', async function (req, res) {
   try {
     const currentSoldier = await StageDedicatedQueue.findOne({
       attributes: ['soldierId'],
-      raw:true
-    },{where:{stageId}}) 
-      res.status(200).send(currentSoldier);
-  } catch(e) {
-      LogManager.getLogger().error(e);
-      res.status(400).send(e);
+      raw: true
+    }, { where: { stageId } })
+    res.status(200).send(currentSoldier);
+  } catch (e) {
+    LogManager.getLogger().error(e);
+    res.status(400).send(e);
   }
 });
 
@@ -41,6 +41,11 @@ router.post('/dedicateSoldierToStage', async function (req, res) {
         ['turnPos', 'ASC'],
       ]
     })
+    if (!topSoldier) {
+      LogManager.getLogger().error("Arrival queue is empy");
+      res.status(404).send("Arrival queue is empy");
+      return;
+    }
     const updateStage = await StageDedicatedQueue.update({
       soldierId: topSoldier.soldierId
     }, {
