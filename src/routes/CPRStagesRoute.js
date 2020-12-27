@@ -2,7 +2,7 @@ import Router from 'express';
 import { CPRStageModel } from '../models/CRPStagesModel.js';
 import LogManager from '../LogManager.js';
 import { SoldierModel } from '../models/SoldierModel.js';
-
+import { CPRCountDownModel } from '../models/CPRCountDownModel.js';
 var router = Router();
 
 router.get('/GetCPRStages', async function (req, res) {
@@ -21,9 +21,8 @@ router.get('/stage/:stageId', async function (req, res) {
   const stageId = req.params.stageId;
   try {
     const currentSoldier = await CPRStageModel.findOne({
-      attributes: ['soldierId'],
-      raw: true
-    }, { where: { stageId } })
+      attributes: ['soldierId'], where: { stageId }, raw: true
+    });
     res.status(200).send(currentSoldier);
   } catch (e) {
     LogManager.getLogger().error(e);
@@ -31,22 +30,27 @@ router.get('/stage/:stageId', async function (req, res) {
   }
 });
 
-router.put('/dedicateSoldierToCPRStage', async function (req, res) {
-  const { stageId } = req.body;
+router.put('/:stationId/callNextSoldierToCprStation', async function (req, res) {
+  const stageId = req.params.stationId;
   try {
-    const topSoldier = await CPRStageModel.findOne({
+    SoldierModel.hasOne(CPRCountDownModel, { foreignKey: 'soldierId' })
+    CPRCountDownModel.belongsTo(SoldierModel, { foreignKey: 'soldierId' })
+    const topSoldier = await CPRCountDownModel.findOne({
       limit: 1,
       raw: true,
-      where: {
-        dedicatedToCPR: false
-      },
       order: [
         ['turnPos', 'ASC'],
-      ]
+      ],
+      include: [{
+        model: SoldierModel,
+        where: {
+          dedicatedToCPR: false
+        }
+      }]
     })
     if (!topSoldier) {
       LogManager.getLogger().error("Arrival queue is empy");
-      res.status(404).send("Arrival queue is empy");
+      res.status(400).send("Arrival queue is empy");
       return;
     }
     const updateStage = await CPRStageModel.update({

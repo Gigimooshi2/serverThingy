@@ -43,7 +43,7 @@ router.post('/dedicateSoldierToStage', async function (req, res) {
     })
     if (!topSoldier) {
       LogManager.getLogger().error("Arrival queue is empy");
-      res.status(404).send("Arrival queue is empy");
+      res.status(400).send("Arrival queue is empy");
       return;
     }
     const updateStage = await StageDedicatedQueue.update({
