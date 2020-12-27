@@ -4,7 +4,7 @@ import { SoldierModel } from '../models/SoldierModel.js';
 
 export const router = Router();
 
-export const QuestinAnswer = Object.freeze({ "yes": 0, "no": 1, "first": 2 })
+export const QuestinAnswer = Object.freeze({ "yes": 0, "no":1, "first": 2 })
 
 export const vaidateSoldierId = async (soldierId) => {
   const soldierCollection = await SoldierModel.findOne({
@@ -24,6 +24,7 @@ router.post('/addSoldierToSoldierTable', async function (req, res) {
         wasVaccinated: false,
         wasArrived: false,
         isAbleToVaccinate: false,
+        cprDone: false,
         q1: soldier.q1,
         q2: soldier.q2,
         q3: soldier.q3,
@@ -60,6 +61,23 @@ router.put('/:soldierId/vaccination_ability', async function (req, res) {
     await vaidateSoldierId(soldierId);
     const [_, updateSoldier] = await SoldierModel.update({
       isAbleToVaccinate: able
+    }, {
+      where: { soldierId }
+    });
+    res.status(200).send(updateSoldier)
+  } catch (e) {
+    LogManager.getLogger().error(e);
+    res.status(400).send(e);
+  }
+});
+
+router.put('/:soldierId/cprDone', async function (req, res) {
+  const soldierId = req.params.soldierId;
+
+  try {
+    await vaidateSoldierId(soldierId);
+    const [_, updateSoldier] = await SoldierModel.update({
+      cprDone: true
     }, {
       where: { soldierId }
     });

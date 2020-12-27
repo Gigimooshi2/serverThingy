@@ -1,36 +1,34 @@
 import Router from 'express';
 import { SoldierArrivalQueue } from '../models/SoldierArrivalQueue.js';
 import LogManager from '../LogManager.js';
-import {vaidateSoldierId} from './SoldierRoute.js'
+import { vaidateSoldierId } from './SoldierRoute.js'
 var router = Router();
 
 router.put('/:soldierId/soldierDidntArrive', async function (req, res) {
   const soldierId = req.params.soldierId;
   const turnLimit = 3;
-  const iterationCounter = 1/(turnLimit+1);
-  console.log("hello")
-  //1/4 
+  const iterationCounter = 1 / (turnLimit + 1);
   try {
     await vaidateSoldierId(soldierId);
-    
+
     const currentSoldier = await SoldierArrivalQueue.findOne({
       where: { soldierId },
       attributes: ['turnPos']
     })
-    if((currentSoldier?.turnPos%1).toFixed(2) != iterationCounter*turnLimit)
-    {
-    const updatedSoldier = await SoldierArrivalQueue.increment('turnPos', {
-      by: 10 + iterationCounter,
-      where: { soldierId }
-    });
-    res.status(200).send("Soldier moved back");
+    const shouldGoBack = currentSoldier ? (currentSoldier.turnPos % 1).toFixed(2) != iterationCounter * turnLimit : false;
+    if (shouldGoBack) {
+      const updatedSoldier = await SoldierArrivalQueue.increment('turnPos', {
+        by: 10 + iterationCounter,
+        where: { soldierId }
+      });
+      res.status(200).send("Soldier moved back");
     }
-    else{
+    else {
       const deletedSoldier = await SoldierArrivalQueue.destroy({
-        where: {soldierId}
+        where: { soldierId }
       })
       res.status(200).send("Soldier removed and logged");
-    }    
+    }
   } catch (e) {
     LogManager.getLogger().error(e);
     res.status(400).send(e);
@@ -48,10 +46,11 @@ router.post('/addSoliderToArrivalQueue', async function (req, res) {
         ['turnPos', 'DESC'],
       ]
     })
+    const turnPos = topSoldier ? topSoldier.turnPos + 1 : 1;
     const soldierCollection = await SoldierArrivalQueue
       .create({
         soldierId: soldier.soldierId,
-        turnPos: (topSoldier?.turnPos || 0) + 1
+        turnPos
       });
     res.status(201).send(soldierCollection);
   } catch (e) {
