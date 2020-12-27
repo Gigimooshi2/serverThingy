@@ -4,7 +4,7 @@ import { SoldierModel } from '../models/SoldierModel.js';
 
 export const router = Router();
 
-export const QuestinAnswer = Object.freeze({ "yes": "yes", "no": "no", "first": "first" })
+export const QuestinAnswer = Object.freeze({ "yes": 0, "no":1, "first": 2 })
 
 export const vaidateSoldierId = async (soldierId) => {
   const soldierCollection = await SoldierModel.findOne({

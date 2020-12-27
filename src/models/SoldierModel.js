@@ -9,7 +9,7 @@ export class SoldierModel extends Model {
 	wasVaccinated;
 	wasArrived;
 	isAbleToVaccinate;
-	cprDone;
+	wasArrivedToCPRStation;
 	q1;
 	q2;
 	q3;
@@ -29,30 +29,34 @@ export class SoldierModel extends Model {
 				},
 				wasVaccinated: {
 					type: new DataTypes.BOOLEAN,
+					defaultValue: false,
 					allowNull: false,
 				},
 				wasArrived: {
 					type: new DataTypes.BOOLEAN,
+					defaultValue: false,
 					allowNull: false,
 				},
 				isAbleToVaccinate: {
 					type: new DataTypes.BOOLEAN,
+					defaultValue: false,
 					allowNull: false,
 				},
-				cprDone: {
+				wasArrivedToCPRStation: {
 					type: new DataTypes.BOOLEAN,
+					defaultValue: false,
 					allowNull: false,
 				},
 				q1: {
-					type: new DataTypes.BOOLEAN(),
+					type: new DataTypes.BOOLEAN,
 					allowNull: false,
 				},
 				q2: {
-					type: new DataTypes.BOOLEAN(),
+					type: new DataTypes.BOOLEAN,
 					allowNull: false,
 				},
 				q3: {
-					type: new DataTypes.BOOLEAN(),
+					type: new DataTypes.BOOLEAN,
 					allowNull: false,
 				},
 				q4: {

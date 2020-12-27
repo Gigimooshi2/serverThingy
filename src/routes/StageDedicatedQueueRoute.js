@@ -9,7 +9,7 @@ router.get('/GetStageDedicatedSoldiers', async function (req, res) {
   try {
     const soldierCollection = await StageDedicatedQueue.findAll({
       attributes: ['stageId','soldierId']
-    }) 
+    })
       res.status(200).send(soldierCollection);
   } catch(e) {
       LogManager.getLogger().error(e);
