@@ -5,7 +5,7 @@ const { Model, DataTypes } = sequelize_pkg;
 export class StageDedicatedQueue extends Model {
 	static isInitialized = false;
 	soldierId;
-	stageId; // 1/2
+	stageId;
 	static createStages(amount){
 		try{
 			for(let i = 0; i<amount;i++)
