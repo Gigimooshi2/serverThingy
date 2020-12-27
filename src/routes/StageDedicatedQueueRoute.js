@@ -49,19 +49,17 @@ router.put('/:stageId/removeSoldierFromStage', async function (req, res) {
 
 router.post('/dedicateSoldierToStage', async function (req, res) {
   const stage = req.body;
-  try {
-    const topSoldier = await SoldierArrivalQueue.findOne({
+    let topSoldier;
+    do{
+     topSoldier = await SoldierArrivalQueue.findOne({
       limit: 1,
       raw: true,
       order: [
         ['turnPos', 'ASC'],
       ]
     })
-    if (!topSoldier) {
-      LogManager.getLogger().error("Arrival queue is empy");
-      res.status(400).send("Arrival queue is empy");
-      return;
     }
+    while (!topSoldier){}
     const updateStage = await StageDedicatedQueue.update({
       soldierId: topSoldier.soldierId
     }, {
@@ -74,13 +72,5 @@ router.post('/dedicateSoldierToStage', async function (req, res) {
       where: {
         soldierId: topSoldier.soldierId
       }
-    })
-    res.status(200).send(topSoldier.soldierId);
-
-  } catch (e) {
-    LogManager.getLogger().error(e);
-    res.status(400).send(e);
-  }
-});
-
+    })});
 export default router;
