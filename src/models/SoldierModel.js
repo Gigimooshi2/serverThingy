@@ -47,10 +47,6 @@ export class SoldierModel extends Model {
 					defaultValue: false,
 					allowNull: false,
 				},
-				wasArrivedToCPRStation:{
-					type: DataTypes.BOOLEAN,
-					defaultValue: false
-				},
 				q1: {
 					type: new DataTypes.BOOLEAN,
 					allowNull: false,
