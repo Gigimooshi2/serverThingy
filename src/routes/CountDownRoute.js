@@ -25,7 +25,9 @@ router.post('/:soldierId/wasVaccinated', async function (req, res) {
 });
 
 router.put('/setWasArrivedToCprStation', async function (req, res) {
+  console.log(req.body)
   const { soldierId, wasArrivedToCprStation } = req.body;
+  console.log("testttt")
   try {
     await vaidateSoldierId(soldierId);
     if (wasArrivedToCprStation) {
@@ -80,7 +82,7 @@ router.get('/getAllCountdowns', async function (req, res) {
       }
     );
     const now = Date.now();
-    const countDownTime = 1000 * 1000 * 60;
+    const countDownTime = 15 * 1000 * 60;
     const deleteCountdownTime = countDownTime * 2;
     const allCountDowns = [];
     await Promise.all(soldiers.map(async (soldier) => {

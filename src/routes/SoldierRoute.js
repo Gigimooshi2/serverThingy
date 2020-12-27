@@ -87,7 +87,7 @@ router.put('/:soldierId/cprDone', async function (req, res) {
 router.put('/:soldierId/was_vaccinated', async function (req, res) {
   const soldierId = req.params.soldierId;
   const wasVaccinated = req.body.wasVaccinated;
-
+  console.log("here")
   try {
     await vaidateSoldierId(soldierId);
     const [_, updateSoldier] = await SoldierModel.update({
