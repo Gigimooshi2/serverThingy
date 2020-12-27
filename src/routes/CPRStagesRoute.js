@@ -1,5 +1,5 @@
 import Router from 'express';
-import { CPRStageModel } from '../models/CRPStagesModel';
+import { CPRStageModel } from '../models/CRPStagesModel.js';
 import LogManager from '../LogManager.js';
 
 var router = Router();
