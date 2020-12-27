@@ -17,13 +17,28 @@ router.get('/GetCPRStages', async function (req, res) {
   }
 });
 
-router.get('/stage/:stageId', async function (req, res) {
+router.get('/cprStage/:stageId', async function (req, res) {
   const stageId = req.params.stageId;
   try {
     const currentSoldier = await CPRStageModel.findOne({
       attributes: ['soldierId'], where: { stageId }, raw: true
     });
     res.status(200).send(currentSoldier);
+  } catch (e) {
+    LogManager.getLogger().error(e);
+    res.status(400).send(e);
+  }
+});
+
+router.put('/:stageId/removeSoldierFromCPRStage', async function (req, res) {
+  const stageId = req.params.stageId;
+  try {
+    const [_, stage] = await CPRStageModel.update({
+      soldierId: null
+    }, {
+      where: { stageId }
+    })
+    res.status(200).send(stage);
   } catch (e) {
     LogManager.getLogger().error(e);
     res.status(400).send(e);
