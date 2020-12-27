@@ -85,8 +85,11 @@ router.get('/getAllCountdowns', async function (req, res) {
     const allCountDowns = [];
     await Promise.all(soldiers.map(async (soldier) => {
       const timeCountDown = now - new Date(soldier.createdAt);
-      console.log( await SoldierModel.findOne({ where: { soldierId: soldier.soldierId }, raw: true }));
-      const { wasArrivedToCPRStation } = await SoldierModel.findOne({ where: { soldierId: soldier.soldierId }, raw: true, attributes: ['wasArrivedToCPRStation'] });
+      const soldierData = await SoldierModel.findOne({ where: { soldierId: soldier.soldierId }, raw: true, attributes: ['wasArrivedToCPRStation'] });
+      if (!soldierData) {
+        return;
+      }
+      const wasArrivedToCPRStation = soldierData.wasArrivedToCPRStation;
       if (timeCountDown > deleteCountdownTime && wasArrivedToCPRStation) {
         CPRCountDownModel.destroy({
           where: {

@@ -21,10 +21,6 @@ router.post('/addSoldierToSoldierTable', async function (req, res) {
     const soldierCollection = await SoldierModel
       .create({
         soldierId: soldier.soldierId,
-        wasVaccinated: false,
-        wasArrived: false,
-        isAbleToVaccinate: false,
-        cprDone: false,
         q1: soldier.q1,
         q2: soldier.q2,
         q3: soldier.q3,
