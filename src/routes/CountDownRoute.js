@@ -80,7 +80,7 @@ router.get('/getAllCountdowns', async function (req, res) {
       }
     );
     const now = Date.now();
-    const countDownTime = 15 * 1000 * 60;
+    const countDownTime = 1000 * 1000 * 60;
     const deleteCountdownTime = countDownTime * 2;
     const allCountDowns = [];
     await Promise.all(soldiers.map(async (soldier) => {
