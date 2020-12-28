@@ -43,7 +43,7 @@ export default class API {
 
         await CPRCountDownModel.initialize(DatabaseService.getSequelize());
         await CPRCountDownModel.sync();
-        for (let i = 400; i <= 500; i++) {
+        // for (let i = 400; i <= 500; i++) {
             // await SoldierModel
             //     .create({
             //         soldierId: i,
@@ -64,7 +64,7 @@ export default class API {
             //     soldierId: i,
             //     turnPos: i
             //   });
-        }
+        // }
         // Init routes
         app.use("/", SoldierRoute);
         app.use("/", ArrivalQueueRoute);
