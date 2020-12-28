@@ -1,7 +1,7 @@
 import Router from 'express';
-import { StageDedicatedQueue } from '../models/StageDedicatedQueue.js';
 import LogManager from '../LogManager.js';
 import { SoldierArrivalQueue } from '../models/SoldierArrivalQueue.js';
+import { StageDedicatedQueue } from '../models/StageDedicatedQueue.js';
 
 var router = Router();
 
@@ -22,9 +22,25 @@ router.get('/:stageId/getSoldierDedicatedToStage', async function (req, res) {
   try {
     const currentSoldier = await StageDedicatedQueue.findOne({
       attributes: ['soldierId'],
-      raw: true
-    }, { where: { stageId } })
+      raw: true,
+      where: { stageId }
+    })
     res.status(200).send(currentSoldier);
+  } catch (e) {
+    LogManager.getLogger().error(e);
+    res.status(400).send(e);
+  }
+});
+
+router.put('/:stageId/removeSoldierFromStage', async function (req, res) {
+  const stageId = req.params.stageId;
+  try {
+    const [_, stage] = await StageDedicatedQueue.update({
+      soldierId: null
+    }, {
+      where: { stageId }
+    })
+    res.status(200).send(stage);
   } catch (e) {
     LogManager.getLogger().error(e);
     res.status(400).send(e);

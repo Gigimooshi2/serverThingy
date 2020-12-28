@@ -28,7 +28,8 @@ router.post('/addSoldierToSoldierTable', async function (req, res) {
         q1: soldier.q1,
         q2: soldier.q2,
         q3: soldier.q3,
-        q4: soldier.q4
+        q4: soldier.q4,
+        q5: soldier.q5
       });
     res.status(201).send(soldierCollection);
   } catch (e) {
@@ -91,7 +92,7 @@ router.put('/:soldierId/cprDone', async function (req, res) {
 router.put('/:soldierId/was_vaccinated', async function (req, res) {
   const soldierId = req.params.soldierId;
   const wasVaccinated = req.body.wasVaccinated;
-
+  console.log("here")
   try {
     await vaidateSoldierId(soldierId);
     const [_, updateSoldier] = await SoldierModel.update({
@@ -115,11 +116,12 @@ router.put('/:soldierId/answer_questions', async function (req, res) {
   const q2 = req.body.q2;
   const q3 = req.body.q3;
   const q4 = req.body.q4;
+  const q5 = req.body.q5;
 
   try {
     await vaidateSoldierId(soldierId);
     const updateSoldier = await SoldierModel.update(
-      { q1, q2, q3, q4 },
+      { q1, q2, q3, q4, q5 },
       { where: { soldierId } }
     );
     res.status(200).send(updateSoldier);

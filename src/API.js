@@ -43,7 +43,7 @@ export default class API {
 
         await CPRCountDownModel.initialize(DatabaseService.getSequelize());
         await CPRCountDownModel.sync();
-        //     for(let i = 0; i<=200; i++)
+        //     for(let i = 0; i<=2000; i++)
         //     {
         //         await SoldierModel
         //         .create({
@@ -51,7 +51,8 @@ export default class API {
         //           q1: false,
         //           q2: false,
         //           q3: false,
-        //           q4: 'yes'
+        //           q4: 'yes',
+        //           q5: true
         //         });
         //     await CPRCountDownModel
         //   .create({

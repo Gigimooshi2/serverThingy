@@ -2,6 +2,8 @@ import Router from 'express';
 import { SoldierArrivalQueue } from '../models/SoldierArrivalQueue.js';
 import LogManager from '../LogManager.js';
 import { vaidateSoldierId } from './SoldierRoute.js'
+import { SoldierModel } from '../models/SoldierModel.js';
+
 var router = Router();
 
 router.put('/:soldierId/soldierDidntArrive', async function (req, res) {
@@ -62,12 +64,18 @@ router.post('/addSoliderToArrivalQueue', async function (req, res) {
 
 router.get('/getResultGetTopSoldiers', async function (req, res) {
   try {
+    SoldierModel.hasOne(SoldierArrivalQueue, { foreignKey: 'soldierId' })
+    SoldierArrivalQueue.belongsTo(SoldierModel, { foreignKey: 'soldierId' })
     const soldierCollection = await SoldierArrivalQueue.findAll({
       attributes: ['soldierId', 'turnPos'],
       order: [
         ['turnPos', 'ASC'],
       ],
-      limit: 50
+      limit: 50,
+      include: [{
+        model: SoldierModel,
+        attributes: ['wasVaccinated'],
+      }]
     })
     res.status(200).send(soldierCollection);
   } catch (e) {
