@@ -45,30 +45,40 @@ router.put('/:stageId/removeSoldierFromCPRStage', async function (req, res) {
   }
 });
 
-router.put('/:stationId/callNextSoldierToCprStation', async function (req, res) {
+const getTopSoldier = async (isVip) => {
+  return await CPRCountDownModel.findOne({
+    limit: 1,
+    raw: true,
+    order: [
+      ['turnPos', 'ASC'],
+    ],
+    include: [{
+      model: SoldierModel,
+      where: {
+        dedicatedToCPR: false,
+        isVip
+      }
+    }]
+  });
+}
+
+router.get('/:stationId/callNextSoldierToCprStation', async function (req, res) {
   const stageId = req.params.stationId;
   try {
-    SoldierModel.hasOne(CPRCountDownModel, { foreignKey: 'soldierId' })
-    CPRCountDownModel.belongsTo(SoldierModel, { foreignKey: 'soldierId' })
-    const topSoldier = await CPRCountDownModel.findOne({
-      limit: 1,
-      raw: true,
-      order: [
-        ['turnPos', 'ASC'],
-      ],
-      include: [{
-        model: SoldierModel,
-        where: {
-          dedicatedToCPR: false
-        }
-      }]
-    })
+    SoldierModel.hasOne(CPRCountDownModel, { foreignKey: 'soldierId' });
+    CPRCountDownModel.belongsTo(SoldierModel, { foreignKey: 'soldierId' });
+
+    let topSoldier = await getTopSoldier(true);
+    if (!topSoldier) {
+      topSoldier = await getTopSoldier(false);
+    }
     if (!topSoldier) {
       LogManager.getLogger().error("Arrival queue is empy");
       res.status(400).send("Arrival queue is empy");
       return;
     }
-    const updateStage = await CPRStageModel.update({
+
+    await CPRStageModel.update({
       soldierId: topSoldier.soldierId
     }, { where: { stageId } });
     await SoldierModel.update({

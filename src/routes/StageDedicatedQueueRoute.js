@@ -2,6 +2,7 @@ import Router from 'express';
 import LogManager from '../LogManager.js';
 import { SoldierArrivalQueue } from '../models/SoldierArrivalQueue.js';
 import { StageDedicatedQueue } from '../models/StageDedicatedQueue.js';
+import { SoldierModel } from '../models/SoldierModel.js';
 
 var router = Router();
 
@@ -47,16 +48,33 @@ router.put('/:stageId/removeSoldierFromStage', async function (req, res) {
   }
 });
 
-router.post('/dedicateSoldierToStage', async function (req, res) {
+router.get('/dedicateSoldierToStage', async function (req, res) {
   const stage = req.body;
   try {
-    const topSoldier = await SoldierArrivalQueue.findOne({
+    SoldierModel.hasOne(SoldierArrivalQueue, { foreignKey: 'soldierId' })
+    SoldierArrivalQueue.belongsTo(SoldierModel, { foreignKey: 'soldierId' })
+    let topSoldier = await SoldierArrivalQueue.findOne({
       limit: 1,
       raw: true,
       order: [
         ['turnPos', 'ASC'],
-      ]
-    })
+      ],
+      include: [{
+        model: SoldierModel,
+        where: {
+          isVip: true
+        }
+      }],
+    });
+    if (!topSoldier) {
+      topSoldier = await SoldierArrivalQueue.findOne({
+        limit: 1,
+        raw: true,
+        order: [
+          ['turnPos', 'ASC'],
+        ],
+      })
+    }
     if (!topSoldier) {
       LogManager.getLogger().error("Arrival queue is empy");
       res.status(400).send("Arrival queue is empy");

@@ -40,7 +40,6 @@ router.put('/:soldierId/soldierDidntArrive', async function (req, res) {
 
 router.post('/addSoliderToArrivalQueue', async function (req, res) {
   const soldier = req.body;
-  console.log(req.body);
   try {
     const topSoldier = await SoldierArrivalQueue.findOne({
       limit: 1,
@@ -62,22 +61,31 @@ router.post('/addSoliderToArrivalQueue', async function (req, res) {
   }
 });
 
+const getOrdersCollection = async (isVip, limit = 50) => {
+  return await SoldierArrivalQueue.findAll({
+    attributes: ['soldierId', 'turnPos'],
+    order: [
+      ['turnPos', 'ASC'],
+    ],
+    limit,
+    include: [{
+      model: SoldierModel,
+      attributes: ['wasVaccinated'],
+      where: {
+        isVip
+      }
+    }]
+  })
+}
+
 router.get('/getResultGetTopSoldiers', async function (req, res) {
   try {
-    SoldierModel.hasOne(SoldierArrivalQueue, { foreignKey: 'soldierId' })
-    SoldierArrivalQueue.belongsTo(SoldierModel, { foreignKey: 'soldierId' })
-    const soldierCollection = await SoldierArrivalQueue.findAll({
-      attributes: ['soldierId', 'turnPos'],
-      order: [
-        ['turnPos', 'ASC'],
-      ],
-      limit: 50,
-      include: [{
-        model: SoldierModel,
-        attributes: ['wasVaccinated'],
-      }]
-    })
-    res.status(200).send(soldierCollection);
+    SoldierModel.hasOne(SoldierArrivalQueue, { foreignKey: 'soldierId' });
+    SoldierArrivalQueue.belongsTo(SoldierModel, { foreignKey: 'soldierId' });
+    const vipQueue = await getOrdersCollection(true);
+    const soldiersQueue = (50 - vipQueue.length > 0) ?
+      await getOrdersCollection(false, 50 - vipQueue.length) : [];
+    res.status(200).send(vipQueue.concat(soldiersQueue));
   } catch (e) {
     LogManager.getLogger().error(e);
     res.status(400).send(e);
