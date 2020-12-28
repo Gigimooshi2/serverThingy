@@ -12,6 +12,7 @@ export class SoldierModel extends Model {
 	wasArrivedToCPRStation;
 	dedicatedToCPR;
 	arrivalQueueRetryCount;
+	vaccineTime;
 	q1;
 	q2;
 	q3;
@@ -49,6 +50,9 @@ export class SoldierModel extends Model {
 					type: new DataTypes.BOOLEAN,
 					defaultValue: false,
 					allowNull: false,
+				},
+				vaccineTime:{
+					type: new DataTypes.DATE,
 				},
 				dedicatedToCPR: {
 					type: new DataTypes.BOOLEAN,

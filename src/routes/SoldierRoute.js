@@ -96,7 +96,8 @@ router.put('/:soldierId/was_vaccinated', async function (req, res) {
   try {
     await vaidateSoldierId(soldierId);
     const [_, updateSoldier] = await SoldierModel.update({
-      wasVaccinated: wasVaccinated
+      wasVaccinated: wasVaccinated,
+      vaccineTime: Date.now()
     }, {
       where:
       {
@@ -229,9 +230,9 @@ router.get(`/getAllVaccinatedSoldiers`, async (req, res) => {
         raw: true,
         where: { wasVaccinated: true },
         order: [
-          ["updatedAt", "ASC"]
+          ["vaccineTime", "ASC"]
         ],
-        attributes: ['soldierId', 'updatedAt']
+        attributes: ['soldierId', 'vaccineTime']
       });
 
     res.status(200).send(soldiers);
