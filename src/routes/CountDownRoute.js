@@ -98,8 +98,7 @@ router.get('/getAllCountdowns', async function (req, res) {
         attributes: ['soldierId', 'createdAt'],
         raw: true,
         order: [
-          ['turnPos', 'ASC'],
-
+          ['turnPos', 'ASC']
         ],
       }
     );

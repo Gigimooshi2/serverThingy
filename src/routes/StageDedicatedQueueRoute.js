@@ -1,6 +1,7 @@
 import Router from 'express';
 import LogManager from '../LogManager.js';
 import { SoldierArrivalQueue } from '../models/SoldierArrivalQueue.js';
+import { SoldierModel } from '../models/SoldierModel.js';
 import { StageDedicatedQueue } from '../models/StageDedicatedQueue.js';
 
 var router = Router();
@@ -49,37 +50,54 @@ router.put('/:stageId/removeSoldierFromStage', async function (req, res) {
 
 router.post('/dedicateSoldierToStage', async function (req, res) {
   const stage = req.body;
+  let transaction;
   try {
+    transaction = await SoldierArrivalQueue.sequelize.transaction();
     const topSoldier = await SoldierArrivalQueue.findOne({
       limit: 1,
       raw: true,
       order: [
         ['turnPos', 'ASC'],
-      ]
+      ],
+      transaction,
+      lock: true
     });
 
     if (!topSoldier) {
+      if (transaction) await transaction.rollback();
       LogManager.getLogger().error("Arrival queue is empy");
       res.status(400).send("Arrival queue is empy");
       return;
     }
-    
-    const updateStage = await StageDedicatedQueue.update({
+
+    await StageDedicatedQueue.update({
       soldierId: topSoldier.soldierId
     }, {
-      where:
-      {
-        stageId: stage.stageId
-      }
+      where: { stageId: stage.stageId },
+      transaction
     });
-    await SoldierArrivalQueue.destroy({
+    await SoldierModel.increment('arrivalQueueRetryCount', {
+      by: 1,
+      where: { soldierId: topSoldier.soldierId },
+      transaction
+    });
+    const wasDeleted = await SoldierArrivalQueue.destroy({
       where: {
         soldierId: topSoldier.soldierId
-      }
-    })
+      },
+      transaction
+    });
+    if (!wasDeleted) {
+      await transaction.rollback();
+      LogManager.getLogger().error(`soldier ${topSoldier.soldierId} already destroyed`);
+      res.status(400).send(`soldier ${topSoldier.soldierId} already destroyed`);
+      return;
+    }
+    await transaction.commit();
     res.status(200).send(topSoldier.soldierId);
 
   } catch (e) {
+    if (transaction) await transaction.rollback();
     LogManager.getLogger().error(e);
     res.status(400).send(e);
   }
