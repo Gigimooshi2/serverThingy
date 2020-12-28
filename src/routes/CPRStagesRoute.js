@@ -68,6 +68,7 @@ router.put('/:stationId/callNextSoldierToCprStation', async function (req, res) 
       }]
     })
     if (!topSoldier) {
+      await transaction.rollback();
       LogManager.getLogger().error("Arrival queue is empy");
       res.status(400).send("Arrival queue is empy");
       return;
