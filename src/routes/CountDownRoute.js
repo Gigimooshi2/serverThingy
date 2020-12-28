@@ -88,8 +88,6 @@ router.get('/getAllCountdowns', async function (req, res) {
         ],
       }
     );
-    //Not dedicated and didn't arrive
-    //Dedicated and did arrive
     const now = Date.now();
     const countDownTime = 15 * 1000 * 60;
     const deleteCountdownTime = countDownTime * 2;
@@ -109,8 +107,6 @@ router.get('/getAllCountdowns', async function (req, res) {
         });
       } else {
         const waintingPrecentage = Math.floor(timeCountDown / countDownTime * 100);
-        //1 1 == 1
-        //
         console.log(soldier.soldierId)
         console.log(soldierData.wasArrivedToCPRStation)
         console.log(soldierData.dedicatedToCPR)
