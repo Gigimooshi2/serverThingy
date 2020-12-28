@@ -65,9 +65,9 @@ router.get('/soldierInfo/:soldierId', async function (req, res) {
 });
 
 router.get('/soldiersVaccinatedToday', async function (req, res) {
-  var startTime = new Date();
+  const startTime = new Date();
   startTime.setHours(0, 0, 0, 1);
-  var endTime = new Date();
+  const endTime = new Date();
   endTime.setHours(23, 59, 59, 59);
   try {
     const soldierCollection = await SoldierModel.count({
@@ -273,9 +273,9 @@ router.put(`/:soldierId/didntVaccintedButEnterVaccinated`, async (req, res) => {
 
 router.get(`/getAllVaccinatedSoldiersToday`, async (req, res) => {
   try {
-    var startTime = new Date();
+    const startTime = new Date();
     startTime.setHours(0, 0, 0, 1);
-    var endTime = new Date();
+    const endTime = new Date();
     endTime.setHours(23, 59, 59, 59);
 
     const soldiers = await SoldierModel.findAll(
