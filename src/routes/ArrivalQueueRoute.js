@@ -27,12 +27,17 @@ router.put('/:soldierId/soldierDidntArrive', async function (req, res) {
             ['turnPos', 'ASC'],
           ]
         });
-        const turnPos = topSoldier ? topSoldier.turnPos + 10.5 : 1;
-        const updatedSoldier = await SoldierArrivalQueue.create({
-          turnPos,
-          soldierId
-        });
-        res.status(200).send(updatedSoldier);
+        if (topSoldier) {
+          const turnPos = topSoldier.turnPos + 10.5;
+          const updatedSoldier = await SoldierArrivalQueue.create({
+            turnPos,
+            soldierId
+          });
+          res.status(200).send(updatedSoldier);
+        }
+        else {
+          res.status(200).send(`Last in queue, removed soldier ${soldierId}`);
+        }
       }
       else {
         res.status(200).send(`Soldier ${soldierId} is out from arrival queue`);
