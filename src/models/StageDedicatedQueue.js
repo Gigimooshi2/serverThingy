@@ -6,21 +6,20 @@ export class StageDedicatedQueue extends Model {
 	static isInitialized = false;
 	soldierId;
 	stageId; // 1/2
-	static createStages(amount){
-		try{
-			for(let i = 0; i<amount;i++)
-			{
-			StageDedicatedQueue.findOrCreate(
-			{
-				where:{
-					stageId: i,
-				},
-				stageId: i,
-				soldierId: null
-			});
+	static createStages(amount) {
+		try {
+			for (let i = 0; i < amount; i++) {
+				StageDedicatedQueue.findOrCreate(
+					{
+						where: {
+							stageId: i,
+						},
+						stageId: i,
+						soldierId: null
+					});
+			}
 		}
-		}
-		catch(e){
+		catch (e) {
 			print("Stages already exist.");
 		}
 	}
@@ -35,11 +34,11 @@ export class StageDedicatedQueue extends Model {
 					type: DataTypes.TINYINT.UNSIGNED,
 					primaryKey: true,
 					allowNull: false,
-                },
+				},
 				soldierId: {
 					type: DataTypes.STRING(10),
 					allowNull: true,
-                }
+				}
 			},
 			{
 				tableName: "soldiersQueue",
