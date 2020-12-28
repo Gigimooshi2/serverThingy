@@ -17,7 +17,8 @@ export class SoldierModel extends Model {
 	q3;
 	q4;
 	q5;
-
+	qSemi;
+	
 	static initialize(sequelize) {
 		if (SoldierModel.isInitialized) {
 			return;
@@ -77,6 +78,11 @@ export class SoldierModel extends Model {
 				},
 				q5: {
 					type: new DataTypes.BOOLEAN,
+					allowNull: false,
+				},
+				qSemi: {
+					type: new DataTypes.BOOLEAN,
+					defaultValue: false,
 					allowNull: false,
 				}
 			},

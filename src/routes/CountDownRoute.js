@@ -26,7 +26,6 @@ router.post('/:soldierId/wasVaccinated', async function (req, res) {
 });
 
 router.put('/setWasArrivedToCprStation', async function (req, res) {
-  console.log(req.body)
   const { soldierId, wasArrivedToCprStation } = req.body;
   try {
     await vaidateSoldierId(soldierId);
@@ -45,13 +44,25 @@ router.put('/setWasArrivedToCprStation', async function (req, res) {
     } else {
       const turnLimit = 3;
       const iterationCounter = 1 / (turnLimit + 1);
+
       try {
         const currentSoldier = await CPRCountDownModel.findOne({
           where: { soldierId },
           raw: true,
           attributes: ['turnPos']
         });
+        await CPRStageModel.update({
+          soldierId: null
+        }, {
+          where: { soldierId }
+        });
         if ((currentSoldier.turnPos % 1).toFixed(2) != iterationCounter * turnLimit) {
+          await SoldierModel.update({
+            wasArrivedToCPRStation: 0,
+            dedicatedToCPR: 0
+          }, {
+            where: { soldierId }
+          });
           const updatedSoldier = await CPRCountDownModel.increment('turnPos', {
             by: 10 + iterationCounter,
             where: { soldierId }
@@ -62,6 +73,10 @@ router.put('/setWasArrivedToCprStation', async function (req, res) {
           const deletedSoldier = await CPRCountDownModel.destroy({
             where: { soldierId }
           })
+          await SoldierModel.update({
+            wasArrivedToCPRStation: 0,
+            dedicatedToCPR: 0
+          },{where:{soldierId}});
           res.status(200).send("Soldier removed and logged");
         }
       } catch (e) {
@@ -83,7 +98,7 @@ router.get('/getAllCountdowns', async function (req, res) {
         attributes: ['soldierId', 'createdAt'],
         raw: true,
         order: [
-          ['createdAt', 'ASC'],
+          ['turnPos', 'ASC']
         ],
       }
     );
