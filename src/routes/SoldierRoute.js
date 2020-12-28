@@ -1,18 +1,36 @@
 import Router from 'express';
 import LogManager from '../LogManager.js';
-import { CPRCountDownModel } from '../models/CPRCountDownModel.js';
-import { CPRStageModel } from '../models/CRPStagesModel.js';
-import { SoldierArrivalQueue } from '../models/SoldierArrivalQueue.js';
-import { SoldierModel } from '../models/SoldierModel.js';
-import { StageDedicatedQueue } from '../models/StageDedicatedQueue.js';
+import {
+  CPRCountDownModel
+} from '../models/CPRCountDownModel.js';
+import {
+  CPRStageModel
+} from '../models/CRPStagesModel.js';
+import {
+  SoldierArrivalQueue
+} from '../models/SoldierArrivalQueue.js';
+import {
+  SoldierModel
+} from '../models/SoldierModel.js';
+import {
+  StageDedicatedQueue
+} from '../models/StageDedicatedQueue.js';
+import sequelize_pkg from 'sequelize';
+const {Op} = sequelize_pkg;
 
 export const router = Router();
 
-export const QuestinAnswer = Object.freeze({ "yes": 0, "no": 1, "first": 2 })
+export const QuestinAnswer = Object.freeze({
+  "yes": 0,
+  "no": 1,
+  "first": 2
+})
 
 export const vaidateSoldierId = async (soldierId) => {
   const soldierCollection = await SoldierModel.findOne({
-    where: { soldierId }
+    where: {
+      soldierId
+    }
   });
   if (!soldierCollection) {
     throw new Error('soldier not found');
@@ -42,12 +60,37 @@ router.get('/soldierInfo/:soldierId', async function (req, res) {
   const soldierId = req.params.soldierId;
   try {
     const soldierCollection = await SoldierModel.findOne({
-      where: { soldierId }
+      where: {
+        soldierId
+      }
     });
     if (!soldierCollection) {
       throw new Error('soldier not found');
     }
     res.status(200).send(soldierCollection)
+  } catch (e) {
+    LogManager.getLogger().error(e);
+    res.status(400).send(e);
+  }
+});
+
+router.get('/soldiersVaccinatedToday', async function (req, res) {
+  var startTime = new Date();
+  startTime.setHours(0, 0, 0, 1);
+  var endTime = new Date();
+  endTime.setHours(23, 59, 59, 59);
+  try {
+    const soldierCollection = await SoldierModel.count({
+       where: {
+         wasVaccinated: true,
+         createdAt: {
+           [Op.between]: [startTime, endTime]
+       }
+     }
+    });
+    res.status(200).send({
+      count: soldierCollection
+    });
   } catch (e) {
     LogManager.getLogger().error(e);
     res.status(400).send(e);
@@ -63,7 +106,9 @@ router.put('/:soldierId/vaccination_ability', async function (req, res) {
     const [_, updateSoldier] = await SoldierModel.update({
       isAbleToVaccinate: able
     }, {
-      where: { soldierId }
+      where: {
+        soldierId
+      }
     });
     res.status(200).send(updateSoldier)
   } catch (e) {
@@ -80,7 +125,9 @@ router.put('/:soldierId/cprDone', async function (req, res) {
     const [_, updateSoldier] = await SoldierModel.update({
       cprDone: true
     }, {
-      where: { soldierId }
+      where: {
+        soldierId
+      }
     });
     res.status(200).send(updateSoldier)
   } catch (e) {
@@ -98,8 +145,7 @@ router.put('/:soldierId/was_vaccinated', async function (req, res) {
     const [_, updateSoldier] = await SoldierModel.update({
       wasVaccinated: wasVaccinated
     }, {
-      where:
-      {
+      where: {
         soldierId
       }
     });
@@ -143,21 +189,31 @@ router.delete('/deleteSoldier/:soldierId', async function (req, res) {
     });
 
     await CPRCountDownModel.destroy({
-      where: { soldierId }
+      where: {
+        soldierId
+      }
     });
 
-    await CPRStageModel.update({ soldierId: null },
-      {
-        where: { soldierId }
-      });
+    await CPRStageModel.update({
+      soldierId: null
+    }, {
+      where: {
+        soldierId
+      }
+    });
 
-    await StageDedicatedQueue.update({ soldierId: null },
-      {
-        where: { soldierId }
-      });
+    await StageDedicatedQueue.update({
+      soldierId: null
+    }, {
+      where: {
+        soldierId
+      }
+    });
 
     await SoldierArrivalQueue.destroy({
-      where: { soldierId }
+      where: {
+        soldierId
+      }
     });
 
     res.status(200).send(`Soldier with Id: ${soldierId} was deleted successfully`);
@@ -171,13 +227,13 @@ router.get(`/:soldierId/vaccinatedAndEnterNotVaccinated`, async (res, req) => {
   try {
     let soldierId = req.params.soldierId;
 
-    await SoldierModel.update(
-      {
-        wasVaccinated: true,
-      },
-      {
-        where: { soldierId }
-      });
+    await SoldierModel.update({
+      wasVaccinated: true,
+    }, {
+      where: {
+        soldierId
+      }
+    });
 
     const bottomSoldier = await CPRCountDownModel.findOne({
       limit: 1,
@@ -204,16 +260,18 @@ router.get(`/:soldierId/didntVaccintedButEnterVaccinated`, async (req, res) => {
   try {
     let soldierId = req.params.soldierId;
 
-    await SoldierModel.update(
-      {
-        wasVaccinated: false,
-      },
-      {
-        where: { soldierId }
-      });
+    await SoldierModel.update({
+      wasVaccinated: false,
+    }, {
+      where: {
+        soldierId
+      }
+    });
 
     await CPRCountDownModel.destroy({
-      where: { soldierId }
+      where: {
+        soldierId
+      }
     });
 
     res.status(200).send(`Soldier with Id: ${soldierId} marked as not vaccinated succesfully`);
