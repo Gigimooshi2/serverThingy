@@ -70,28 +70,45 @@ router.put('/setWasArrivedToCprStation', async function (req, res) {
   }
 });
 
+const getOrdersCollection = async (isVip, limit = 50) => {
+  return await CPRCountDownModel.findAll(
+    {
+      attributes: ['soldierId', 'createdAt'],
+      raw: true,
+      order: [
+        ['turnPos', 'ASC'],
+      ],
+      limit,
+      include: [{
+        model: SoldierModel,
+        attributes: ['wasArrivedToCPRStation'],
+        where: {
+          isVip
+        },
+        raw: true
+      }]
+    }
+  )
+}
+
 router.get('/getAllCountdowns', async function (req, res) {
   try {
-    const soldiers = await CPRCountDownModel.findAll(
-      {
-        attributes: ['soldierId', 'createdAt'],
-        raw: true,
-        order: [
-          ['turnPos', 'ASC'],
-        ]
-      }
-    );
+    SoldierModel.hasOne(CPRCountDownModel, { foreignKey: 'soldierId' });
+    CPRCountDownModel.belongsTo(SoldierModel, { foreignKey: 'soldierId' });
+
+    const vipQueue = await getOrdersCollection(true);
+    const soldiersQueue = (50 - vipQueue.length > 0) ?
+      await getOrdersCollection(false, 50 - vipQueue.length) : [];
+    const soldiers = vipQueue.concat(soldiersQueue);
+
     const now = Date.now();
     const countDownTime = 15 * 1000 * 60;
     const deleteCountdownTime = countDownTime * 2;
     const allCountDowns = [];
+
     await Promise.all(soldiers.map(async (soldier) => {
       const timeCountDown = now - new Date(soldier.createdAt);
-      const soldierData = await SoldierModel.findOne({ where: { soldierId: soldier.soldierId }, raw: true, attributes: ['wasArrivedToCPRStation'] });
-      if (!soldierData) {
-        return;
-      }
-      const wasArrivedToCPRStation = soldierData.wasArrivedToCPRStation;
+      const wasArrivedToCPRStation = soldier['soldier.wasArrivedToCPRStation'];
       if (timeCountDown > deleteCountdownTime && wasArrivedToCPRStation) {
         CPRCountDownModel.destroy({
           where: {

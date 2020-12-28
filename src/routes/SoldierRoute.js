@@ -34,6 +34,17 @@ router.post('/addSoldierToSoldierTable', async function (req, res) {
   }
 });
 
+router.get('/soldiers', async function (req, res) {
+  try {
+    const soldierCollection = await SoldierModel.findAll();
+    res.status(200).send(soldierCollection);
+  } catch (e) {
+    LogManager.getLogger().error(e);
+    res.status(400).send(e);
+  }
+});
+
+
 router.get('/soldierInfo/:soldierId', async function (req, res) {
   const soldierId = req.params.soldierId;
   try {
@@ -97,7 +108,7 @@ router.put('/:soldierId/was_vaccinated', async function (req, res) {
       where:
       {
         soldierId
-      } 
+      }
     });
     res.status(200).send(updateSoldier);
   } catch (e) {

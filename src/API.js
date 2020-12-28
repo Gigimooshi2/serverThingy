@@ -43,22 +43,28 @@ export default class API {
 
         await CPRCountDownModel.initialize(DatabaseService.getSequelize());
         await CPRCountDownModel.sync();
-        //     for(let i = 0; i<=2000; i++)
-        //     {
-        //         await SoldierModel
-        //         .create({
-        //           soldierId: i,
-        //           q1: false,
-        //           q2: false,
-        //           q3: false,
-        //           q4: 'yes',
-        //           q5: true
-        //         });
-        //     await CPRCountDownModel
-        //   .create({
-        //     soldierId: i,
-        //     turnPos: i
-        //   });}
+        // for (let i = 400; i <= 500; i++) {
+            // await SoldierModel
+            //     .create({
+            //         soldierId: i,
+            //         isVip: !!Math.floor(Math.random() * 2),
+            //         q1: false,
+            //         q2: false,
+            //         q3: false,
+            //         q4: 'yes',
+            //         q5: true
+            //     });
+            // await SoldierArrivalQueue
+            //     .create({
+            //         soldierId: i,
+            //         turnPos: i
+            //     })
+            //     await CPRCountDownModel
+            //   .create({
+            //     soldierId: i,
+            //     turnPos: i
+            //   });
+        // }
         // Init routes
         app.use("/", SoldierRoute);
         app.use("/", ArrivalQueueRoute);
