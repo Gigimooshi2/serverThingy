@@ -21,6 +21,11 @@ export class Application {
         this.expressApp.use(Compression());
         this.expressApp.use(Helmet());
         this.expressApp.use(Cors());
+        this.expressApp.use(function (req, res, next) {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            next();
+        });
         // parse application/x-www-form-urlencoded
         this.expressApp.use(BodyParser.urlencoded({ extended: false }))
         // parse application/json
@@ -45,24 +50,24 @@ export class Application {
         this.expressApp.use((err, req, res, next) => {
             // Fallback to default node handler
             if (res.headersSent) {
-              next(err);
-              return;
+                next(err);
+                return;
             }
-          
-            logger.error(err.message, {url: req.originalUrl});
-          
+
+            logger.error(err.message, { url: req.originalUrl });
+
             res.status(500);
             res.json({ error: err.message });
         });
     }
-   
+
     /**
      * Publishes the api over the node server.
      * <p>
      * The port of the server is taken from the application properties.
      */
     start() {
-        const port =  this.properties.get('main.app.port');
+        const port = this.properties.get('main.app.port');
         const logger = this.loggger;
         this.server = this.expressApp.listen(port, () => {
             logger.info("The application has been launched on port " + port)
