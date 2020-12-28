@@ -1,6 +1,10 @@
 import Router from 'express';
 import LogManager from '../LogManager.js';
+import { CPRCountDownModel } from '../models/CPRCountDownModel.js';
+import { CPRStageModel } from '../models/CRPStagesModel.js';
+import { SoldierArrivalQueue } from '../models/SoldierArrivalQueue.js';
 import { SoldierModel } from '../models/SoldierModel.js';
+import { StageDedicatedQueue } from '../models/StageDedicatedQueue.js';
 
 export const router = Router();
 
@@ -97,7 +101,7 @@ router.put('/:soldierId/was_vaccinated', async function (req, res) {
       where:
       {
         soldierId
-      } 
+      }
     });
     res.status(200).send(updateSoldier);
   } catch (e) {
@@ -123,6 +127,98 @@ router.put('/:soldierId/answer_questions', async function (req, res) {
     res.status(200).send(updateSoldier);
   } catch (e) {
     LogManager.getLogger().error(e);
+    res.status(400).send(e);
+  }
+});
+
+
+router.delete('/deleteSoldier/:soldierId', async function (req, res) {
+  const soldierId = req.params.soldierId;
+
+  console.log(`Deleting soldier with id ${soldierId} from all tables`);
+  try {
+    await SoldierModel.destroy({
+      where: {
+        soldierId
+      }
+    });
+
+    await CPRCountDownModel.destroy({
+      where: { soldierId }
+    });
+
+    await CPRStageModel.update({ soldierId: null },
+      {
+        where: { soldierId }
+      });
+
+    await StageDedicatedQueue.update({ soldierId: null },
+      {
+        where: { soldierId }
+      });
+
+    await SoldierArrivalQueue.destroy({
+      where: { soldierId }
+    });
+
+    res.status(200).send(`Soldier with Id: ${soldierId} was deleted successfully`);
+  } catch (e) {
+    LogManager.getLogger().error(e);
+    res.status(400).send(e);
+  }
+});
+
+router.get(`/:soldierId/vaccinatedAndEnterNotVaccinated`, async (res, req) => {
+  try {
+    let soldierId = req.params.soldierId;
+
+    await SoldierModel.update(
+      {
+        wasVaccinated: true,
+      },
+      {
+        where: { soldierId }
+      });
+
+    const bottomSoldier = await CPRCountDownModel.findOne({
+      limit: 1,
+      raw: true,
+      order: [
+        ['turnPos', 'DESC'],
+      ]
+    });
+    const turnPos = bottomSoldier ? bottomSoldier.turnPos + 1 : 1;
+
+    await CPRCountDownModel.create({
+      soldierId,
+      turnPos
+    });
+
+    res.status(200).send(`Soldier with Id: ${soldierId} marked as vaccined succesfully`);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+
+router.get(`/:soldierId/didntVaccintedButEnterVaccinated`, async (req, res) => {
+  try {
+    let soldierId = req.params.soldierId;
+
+    await SoldierModel.update(
+      {
+        wasVaccinated: false,
+      },
+      {
+        where: { soldierId }
+      });
+
+    await CPRCountDownModel.destroy({
+      where: { soldierId }
+    });
+
+    res.status(200).send(`Soldier with Id: ${soldierId} marked as not vaccinated succesfully`);
+  } catch (e) {
     res.status(400).send(e);
   }
 });

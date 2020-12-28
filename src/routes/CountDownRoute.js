@@ -1,6 +1,7 @@
 import Router from 'express';
 import LogManager from '../LogManager.js';
 import { CPRCountDownModel } from '../models/CPRCountDownModel.js';
+import { CPRStageModel } from '../models/CRPStagesModel.js';
 import { SoldierModel } from '../models/SoldierModel.js';
 import { vaidateSoldierId } from './SoldierRoute.js'
 const router = Router();
@@ -27,12 +28,16 @@ router.post('/:soldierId/wasVaccinated', async function (req, res) {
 router.put('/setWasArrivedToCprStation', async function (req, res) {
   console.log(req.body)
   const { soldierId, wasArrivedToCprStation } = req.body;
-  console.log("testttt")
   try {
     await vaidateSoldierId(soldierId);
     if (wasArrivedToCprStation) {
       const [_, updateSoldier] = await SoldierModel.update({
         wasArrivedToCPRStation: true
+      }, {
+        where: { soldierId }
+      });
+       await CPRStageModel.update({
+        soldierId: null
       }, {
         where: { soldierId }
       });
@@ -72,13 +77,15 @@ router.put('/setWasArrivedToCprStation', async function (req, res) {
 
 router.get('/getAllCountdowns', async function (req, res) {
   try {
+
     const soldiers = await CPRCountDownModel.findAll(
       {
         attributes: ['soldierId', 'createdAt'],
         raw: true,
         order: [
-          ['turnPos', 'ASC'],
-        ]
+          ['createdAt', 'ASC'],
+
+        ],
       }
     );
     const now = Date.now();
@@ -87,7 +94,7 @@ router.get('/getAllCountdowns', async function (req, res) {
     const allCountDowns = [];
     await Promise.all(soldiers.map(async (soldier) => {
       const timeCountDown = now - new Date(soldier.createdAt);
-      const soldierData = await SoldierModel.findOne({ where: { soldierId: soldier.soldierId }, raw: true, attributes: ['wasArrivedToCPRStation'] });
+      const soldierData = await SoldierModel.findOne({ where: { soldierId: soldier.soldierId}, raw: true, attributes: ['wasArrivedToCPRStation','dedicatedToCPR'] });
       if (!soldierData) {
         return;
       }
@@ -100,7 +107,8 @@ router.get('/getAllCountdowns', async function (req, res) {
         });
       } else {
         const waintingPrecentage = Math.floor(timeCountDown / countDownTime * 100);
-        allCountDowns.push({ soldierId: soldier.soldierId, waintingPrecentage: waintingPrecentage > 100 ? 100 : waintingPrecentage, wasArrivedToCPRStation });
+        if(!(!wasArrivedToCPRStation && soldierData.dedicatedToCPR))
+        allCountDowns.push({ createdAt: soldier.createdAt, soldierId: soldier.soldierId, waintingPrecentage: waintingPrecentage > 100 ? 100 : waintingPrecentage, wasArrivedToCPRStation });
       }
     }));
     res.status(200).send(allCountDowns);
