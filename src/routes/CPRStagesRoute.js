@@ -75,10 +75,10 @@ router.put('/:stationId/callNextSoldierToCprStation', async function (req, res) 
     }
     const updateStage = await CPRStageModel.update({
       soldierId: topSoldier.soldierId
-    }, { where: { stageId } });
+    }, { where: { stageId }, transaction });
     await SoldierModel.update({
       dedicatedToCPR: true
-    }, { where: { soldierId: topSoldier.soldierId } });
+    }, { where: { soldierId: topSoldier.soldierId }, transaction });
     await transaction.commit();
     res.status(200).send(topSoldier.soldierId);
   } catch (e) {

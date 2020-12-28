@@ -73,11 +73,13 @@ router.post('/dedicateSoldierToStage', async function (req, res) {
     await StageDedicatedQueue.update({
       soldierId: topSoldier.soldierId
     }, {
-      where: { stageId: stage.stageId }
+      where: { stageId: stage.stageId },
+      transaction
     });
     await SoldierModel.increment('arrivalQueueRetryCount', {
       by: 1,
-      where: { soldierId: topSoldier.soldierId }
+      where: { soldierId: topSoldier.soldierId },
+      transaction
     });
     const wasDeleted = await SoldierArrivalQueue.destroy({
       where: {
