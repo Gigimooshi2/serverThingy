@@ -107,9 +107,6 @@ router.get('/getAllCountdowns', async function (req, res) {
         });
       } else {
         const waintingPrecentage = Math.floor(timeCountDown / countDownTime * 100);
-        console.log(soldier.soldierId)
-        console.log(soldierData.wasArrivedToCPRStation)
-        console.log(soldierData.dedicatedToCPR)
         if(!(!wasArrivedToCPRStation && soldierData.dedicatedToCPR))
         allCountDowns.push({ createdAt: soldier.createdAt, soldierId: soldier.soldierId, waintingPrecentage: waintingPrecentage > 100 ? 100 : waintingPrecentage, wasArrivedToCPRStation });
       }

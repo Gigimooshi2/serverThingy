@@ -168,7 +168,7 @@ router.delete('/deleteSoldier/:soldierId', async function (req, res) {
   }
 });
 
-router.get(`/:soldierId/vaccineatedAndEnterNotVaccinated`, async (res, req) => {
+router.get(`/:soldierId/vaccinatedAndEnterNotVaccinated`, async (res, req) => {
   try {
     let soldierId = req.params.soldierId;
 
