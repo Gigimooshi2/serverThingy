@@ -1,22 +1,12 @@
 import Router from 'express';
 import LogManager from '../LogManager.js';
-import {
-  CPRCountDownModel
-} from '../models/CPRCountDownModel.js';
-import {
-  CPRStageModel
-} from '../models/CRPStagesModel.js';
-import {
-  SoldierArrivalQueue
-} from '../models/SoldierArrivalQueue.js';
-import {
-  SoldierModel
-} from '../models/SoldierModel.js';
-import {
-  StageDedicatedQueue
-} from '../models/StageDedicatedQueue.js';
+import { CPRCountDownModel } from '../models/CPRCountDownModel.js';
+import { CPRStageModel } from '../models/CRPStagesModel.js';
+import { SoldierArrivalQueue } from '../models/SoldierArrivalQueue.js';
+import { SoldierModel } from '../models/SoldierModel.js';
+import { StageDedicatedQueue } from '../models/StageDedicatedQueue.js';
 import sequelize_pkg from 'sequelize';
-const {Op} = sequelize_pkg;
+const { Op } = sequelize_pkg;
 
 export const router = Router();
 
@@ -75,9 +65,9 @@ router.get('/soldierInfo/:soldierId', async function (req, res) {
 });
 
 router.get('/soldiersVaccinatedToday', async function (req, res) {
-  var startTime = new Date();
+  const startTime = new Date();
   startTime.setHours(0, 0, 0, 1);
-  var endTime = new Date();
+  const endTime = new Date();
   endTime.setHours(23, 59, 59, 59);
   try {
     const soldierCollection = await SoldierModel.count({
@@ -143,7 +133,8 @@ router.put('/:soldierId/was_vaccinated', async function (req, res) {
   try {
     await vaidateSoldierId(soldierId);
     const [_, updateSoldier] = await SoldierModel.update({
-      wasVaccinated: wasVaccinated
+      wasVaccinated: wasVaccinated,
+      vaccineTime: Date.now()
     }, {
       where: {
         soldierId
@@ -223,7 +214,7 @@ router.delete('/deleteSoldier/:soldierId', async function (req, res) {
   }
 });
 
-router.get(`/:soldierId/vaccinatedAndEnterNotVaccinated`, async (res, req) => {
+router.put(`/:soldierId/vaccinatedAndEnterNotVaccinated`, async (res, req) => {
   try {
     let soldierId = req.params.soldierId;
 
@@ -256,7 +247,7 @@ router.get(`/:soldierId/vaccinatedAndEnterNotVaccinated`, async (res, req) => {
 });
 
 
-router.get(`/:soldierId/didntVaccintedButEnterVaccinated`, async (req, res) => {
+router.put(`/:soldierId/didntVaccintedButEnterVaccinated`, async (req, res) => {
   try {
     let soldierId = req.params.soldierId;
 
@@ -275,6 +266,34 @@ router.get(`/:soldierId/didntVaccintedButEnterVaccinated`, async (req, res) => {
     });
 
     res.status(200).send(`Soldier with Id: ${soldierId} marked as not vaccinated succesfully`);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+router.get(`/getAllVaccinatedSoldiersToday`, async (req, res) => {
+  try {
+    const startTime = new Date();
+    startTime.setHours(0, 0, 0, 1);
+    const endTime = new Date();
+    endTime.setHours(23, 59, 59, 59);
+
+    const soldiers = await SoldierModel.findAll(
+      {
+        raw: true,
+        where: {
+          wasVaccinated: true,
+          vaccineTime: {
+            [Op.between]: [startTime, endTime]
+          }
+        },
+        order: [
+          ["vaccineTime", "ASC"]
+        ],
+        attributes: ['soldierId', 'vaccineTime']
+      });
+
+    res.status(200).send({ soldiers });
   } catch (e) {
     res.status(400).send(e);
   }
