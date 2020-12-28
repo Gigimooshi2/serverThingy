@@ -11,12 +11,12 @@ export class SoldierModel extends Model {
 	isAbleToVaccinate;
 	wasArrivedToCPRStation;
 	dedicatedToCPR;
+	arrivalQueueRetryCount;
 	q1;
 	q2;
 	q3;
 	q4;
 	q5;
-	qSemi;
 	
 	static initialize(sequelize) {
 		if (SoldierModel.isInitialized) {
@@ -55,6 +55,10 @@ export class SoldierModel extends Model {
 					defaultValue: false,
 					allowNull: false,
 				},
+				arrivalQueueRetryCount: {
+					type: DataTypes.TINYINT.UNSIGNED,
+					defaultValue: 0
+				},
 				q1: {
 					type: new DataTypes.BOOLEAN,
 					allowNull: false,
@@ -73,11 +77,6 @@ export class SoldierModel extends Model {
 				},
 				q5: {
 					type: new DataTypes.BOOLEAN,
-					allowNull: false,
-				},
-				qSemi: {
-					type: new DataTypes.BOOLEAN,
-					defaultValue: false,
 					allowNull: false,
 				}
 			},

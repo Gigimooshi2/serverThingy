@@ -47,8 +47,7 @@ router.post('/addSoldierToSoldierTable', async function (req, res) {
         q2: soldier.q2,
         q3: soldier.q3,
         q4: soldier.q4,
-        q5: soldier.q5,
-        qSemi: soldier.qSemi
+        q5: soldier.q5
       });
     res.status(201).send(soldierCollection);
   } catch (e) {
@@ -164,21 +163,12 @@ router.put('/:soldierId/answer_questions', async function (req, res) {
   const q3 = req.body.q3;
   const q4 = req.body.q4;
   const q5 = req.body.q5;
-  const qSemi = req.body.qSemi;
   try {
     await vaidateSoldierId(soldierId);
-    const updateSoldier = await SoldierModel.update({
-      q1,
-      q2,
-      q3,
-      q4,
-      q5,
-      qSemi
-    }, {
-      where: {
-        soldierId
-      }
-    });
+    const updateSoldier = await SoldierModel.update(
+      { q1, q2, q3, q4, q5 },
+      { where: { soldierId } }
+    );
     res.status(200).send(updateSoldier);
   } catch (e) {
     LogManager.getLogger().error(e);
