@@ -56,12 +56,14 @@ router.post('/dedicateSoldierToStage', async function (req, res) {
       order: [
         ['turnPos', 'ASC'],
       ]
-    })
+    });
+
     if (!topSoldier) {
       LogManager.getLogger().error("Arrival queue is empy");
       res.status(400).send("Arrival queue is empy");
       return;
     }
+    
     const updateStage = await StageDedicatedQueue.update({
       soldierId: topSoldier.soldierId
     }, {
