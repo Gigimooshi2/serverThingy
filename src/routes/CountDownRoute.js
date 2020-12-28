@@ -43,7 +43,7 @@ router.put('/setWasArrivedToCprStation', async function (req, res) {
       res.status(200).send(updateSoldier)
     } else {
       const turnLimit = 3;
-      const iterationCounter = 1 / (turnLimit);
+      const iterationCounter = 1 / (turnLimit + 1);
 
       try {
         const currentSoldier = await CPRCountDownModel.findOne({
