@@ -5,6 +5,8 @@ import { CPRStageModel } from '../models/CRPStagesModel.js';
 import { SoldierArrivalQueue } from '../models/SoldierArrivalQueue.js';
 import { SoldierModel } from '../models/SoldierModel.js';
 import { StageDedicatedQueue } from '../models/StageDedicatedQueue.js';
+import sequelize_pkg from 'sequelize';
+const { Op } = sequelize_pkg;
 
 export const router = Router();
 
@@ -168,7 +170,7 @@ router.delete('/deleteSoldier/:soldierId', async function (req, res) {
   }
 });
 
-router.get(`/:soldierId/vaccinatedAndEnterNotVaccinated`, async (res, req) => {
+router.put(`/:soldierId/vaccinatedAndEnterNotVaccinated`, async (res, req) => {
   try {
     let soldierId = req.params.soldierId;
 
@@ -201,7 +203,7 @@ router.get(`/:soldierId/vaccinatedAndEnterNotVaccinated`, async (res, req) => {
 });
 
 
-router.get(`/:soldierId/didntVaccintedButEnterVaccinated`, async (req, res) => {
+router.put(`/:soldierId/didntVaccintedButEnterVaccinated`, async (req, res) => {
   try {
     let soldierId = req.params.soldierId;
 
@@ -225,17 +227,27 @@ router.get(`/:soldierId/didntVaccintedButEnterVaccinated`, async (req, res) => {
 
 router.get(`/getAllVaccinatedSoldiers`, async (req, res) => {
   try {
+    var startTime = new Date();
+    startTime.setHours(0, 0, 0, 1);
+    var endTime = new Date();
+    endTime.setHours(23, 59, 59, 59);
+
     const soldiers = await SoldierModel.findAll(
       {
         raw: true,
-        where: { wasVaccinated: true },
+        where: {
+          wasVaccinated: true,
+          vaccineTime: {
+            [Op.between]: [startTime, endTime]
+          }
+        },
         order: [
           ["vaccineTime", "ASC"]
         ],
         attributes: ['soldierId', 'vaccineTime']
       });
 
-    res.status(200).send(soldiers);
+    res.status(200).send({ soldiers });
   } catch (e) {
     res.status(400).send(e);
   }
