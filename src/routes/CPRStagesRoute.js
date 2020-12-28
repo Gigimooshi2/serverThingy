@@ -47,7 +47,9 @@ router.put('/:stageId/removeSoldierFromCPRStage', async function (req, res) {
 
 router.put('/:stationId/callNextSoldierToCprStation', async function (req, res) {
   const stageId = req.params.stationId;
+  let transaction;
   try {
+    transaction = await CPRCountDownModel.sequelize.transaction();
     SoldierModel.hasOne(CPRCountDownModel, { foreignKey: 'soldierId' })
     CPRCountDownModel.belongsTo(SoldierModel, { foreignKey: 'soldierId' })
     const topSoldier = await CPRCountDownModel.findOne({
@@ -56,6 +58,8 @@ router.put('/:stationId/callNextSoldierToCprStation', async function (req, res) 
       order: [
         ['turnPos', 'ASC'],
       ],
+      transaction,
+      lock: true,
       include: [{
         model: SoldierModel,
         where: {
@@ -74,8 +78,10 @@ router.put('/:stationId/callNextSoldierToCprStation', async function (req, res) 
     await SoldierModel.update({
       dedicatedToCPR: true
     }, { where: { soldierId: topSoldier.soldierId } });
+    await transaction.commit();
     res.status(200).send(topSoldier.soldierId);
   } catch (e) {
+    if (transaction) await transaction.rollback();
     LogManager.getLogger().error(e);
     res.status(400).send(e);
   }

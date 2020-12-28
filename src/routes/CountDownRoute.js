@@ -84,7 +84,6 @@ router.get('/getAllCountdowns', async function (req, res) {
         raw: true,
         order: [
           ['createdAt', 'ASC'],
-
         ],
       }
     );

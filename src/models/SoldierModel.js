@@ -11,6 +11,7 @@ export class SoldierModel extends Model {
 	isAbleToVaccinate;
 	wasArrivedToCPRStation;
 	dedicatedToCPR;
+	arrivalQueueRetryCount;
 	q1;
 	q2;
 	q3;
@@ -53,6 +54,10 @@ export class SoldierModel extends Model {
 					type: new DataTypes.BOOLEAN,
 					defaultValue: false,
 					allowNull: false,
+				},
+				arrivalQueueRetryCount: {
+					type: DataTypes.TINYINT.UNSIGNED,
+					defaultValue: 0
 				},
 				q1: {
 					type: new DataTypes.BOOLEAN,

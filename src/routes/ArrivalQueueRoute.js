@@ -9,28 +9,36 @@ var router = Router();
 router.put('/:soldierId/soldierDidntArrive', async function (req, res) {
   const soldierId = req.params.soldierId;
   const turnLimit = 3;
-  const iterationCounter = 1 / (turnLimit + 1);
   try {
     await vaidateSoldierId(soldierId);
 
-    const currentSoldier = await SoldierArrivalQueue.findOne({
+    const currentSoldier = await SoldierModel.findOne({
       where: { soldierId },
       raw: true,
-      attributes: ['turnPos']
-    })
-    const shouldGoBack = currentSoldier ? (currentSoldier.turnPos % 1).toFixed(2) != iterationCounter * turnLimit : false;
-    if (shouldGoBack) {
-      const updatedSoldier = await SoldierArrivalQueue.increment('turnPos', {
-        by: 10 + iterationCounter,
-        where: { soldierId }
-      });
-      res.status(200).send("Soldier moved back");
-    }
-    else {
-      const deletedSoldier = await SoldierArrivalQueue.destroy({
-        where: { soldierId }
-      })
-      res.status(200).send("Soldier removed and logged");
+      attributes: ['arrivalQueueRetryCount']
+    });
+    if (currentSoldier) {
+      if (currentSoldier.arrivalQueueRetryCount < turnLimit) {
+        const topSoldier = await SoldierArrivalQueue.findOne({
+          limit: 1,
+          raw: true,
+          attributes: ['turnPos'],
+          order: [
+            ['turnPos', 'ASC'],
+          ]
+        });
+        const turnPos = topSoldier ? topSoldier.turnPos + 10.5 : 1;
+        const updatedSoldier = await SoldierArrivalQueue.create({
+          turnPos,
+          soldierId
+        });
+        res.status(200).send(updatedSoldier);
+      }
+      else {
+        res.status(200).send(`Soldier ${soldierId} is out from arrival queue`);
+      }
+    } else {
+      res.status(404).send("soldier not found");
     }
   } catch (e) {
     LogManager.getLogger().error(e);
