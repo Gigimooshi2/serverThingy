@@ -221,3 +221,21 @@ router.get(`/:soldierId/didntVaccintedButEnterVaccinated`, async (req, res) => {
     res.status(400).send(e);
   }
 });
+
+router.get(`/getAllVaccinatedSoldiers`, async (req, res) => {
+  try {
+    const soldiers = await SoldierModel.findAll(
+      {
+        raw: true,
+        where: { wasVaccinated: true },
+        order: [
+          ["updatedAt", "ASC"]
+        ],
+        attributes: ['soldierId', 'updatedAt']
+      });
+
+    res.status(200).send(soldiers);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
