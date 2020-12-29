@@ -71,12 +71,12 @@ router.get('/soldiersVaccinatedToday', async function (req, res) {
   endTime.setHours(23, 59, 59, 59);
   try {
     const soldierCollection = await SoldierModel.count({
-       where: {
-         wasVaccinated: true,
-         createdAt: {
-           [Op.between]: [startTime, endTime]
-       }
-     }
+      where: {
+        wasVaccinated: true,
+        createdAt: {
+          [Op.between]: [startTime, endTime]
+        }
+      }
     });
     res.status(200).send({
       count: soldierCollection
@@ -89,13 +89,11 @@ router.get('/soldiersVaccinatedToday', async function (req, res) {
 
 router.put('/:soldierId/vaccination_ability', async function (req, res) {
   const soldierId = req.params.soldierId;
-  const able = req.body.isAbleToVaccinate;
+  const soldierData = req.body;
 
   try {
     await vaidateSoldierId(soldierId);
-    const [_, updateSoldier] = await SoldierModel.update({
-      isAbleToVaccinate: able
-    }, {
+    const [_, updateSoldier] = await SoldierModel.update(soldierData, {
       where: {
         soldierId
       }
@@ -129,7 +127,6 @@ router.put('/:soldierId/cprDone', async function (req, res) {
 router.put('/:soldierId/was_vaccinated', async function (req, res) {
   const soldierId = req.params.soldierId;
   const wasVaccinated = req.body.wasVaccinated;
-  console.log("here")
   try {
     await vaidateSoldierId(soldierId);
     const [_, updateSoldier] = await SoldierModel.update({
