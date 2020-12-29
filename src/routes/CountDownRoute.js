@@ -35,7 +35,7 @@ router.put('/setWasArrivedToCprStation', async function (req, res) {
       }, {
         where: { soldierId }
       });
-       await CPRStageModel.update({
+      await CPRStageModel.update({
         soldierId: null
       }, {
         where: { soldierId }
@@ -76,7 +76,7 @@ router.put('/setWasArrivedToCprStation', async function (req, res) {
           await SoldierModel.update({
             wasArrivedToCPRStation: 0,
             dedicatedToCPR: 0
-          },{where:{soldierId}});
+          }, { where: { soldierId } });
           res.status(200).send("Soldier removed and logged");
         }
       } catch (e) {
@@ -104,11 +104,11 @@ router.get('/getAllCountdowns', async function (req, res) {
     );
     const now = Date.now();
     const countDownTime = 15 * 1000 * 60;
-    const deleteCountdownTime = countDownTime * 2;
+    const deleteCountdownTime = countDownTime + (5 * 1000 * 60);
     const allCountDowns = [];
     await Promise.all(soldiers.map(async (soldier) => {
       const timeCountDown = now - new Date(soldier.createdAt);
-      const soldierData = await SoldierModel.findOne({ where: { soldierId: soldier.soldierId}, raw: true, attributes: ['wasArrivedToCPRStation','dedicatedToCPR'] });
+      const soldierData = await SoldierModel.findOne({ where: { soldierId: soldier.soldierId }, raw: true, attributes: ['wasArrivedToCPRStation', 'dedicatedToCPR'] });
       if (!soldierData) {
         return;
       }
@@ -121,8 +121,8 @@ router.get('/getAllCountdowns', async function (req, res) {
         });
       } else {
         const waintingPrecentage = Math.floor(timeCountDown / countDownTime * 100);
-        if(!(!wasArrivedToCPRStation && soldierData.dedicatedToCPR))
-        allCountDowns.push({ createdAt: soldier.createdAt, soldierId: soldier.soldierId, waintingPrecentage: waintingPrecentage > 100 ? 100 : waintingPrecentage, wasArrivedToCPRStation });
+        if (!(!wasArrivedToCPRStation && soldierData.dedicatedToCPR))
+          allCountDowns.push({ createdAt: soldier.createdAt, soldierId: soldier.soldierId, waintingPrecentage: waintingPrecentage > 100 ? 100 : waintingPrecentage, wasArrivedToCPRStation });
       }
     }));
     res.status(200).send(allCountDowns);
