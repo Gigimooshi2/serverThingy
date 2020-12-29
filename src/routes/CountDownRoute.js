@@ -56,7 +56,23 @@ router.put('/setWasArrivedToCprStation', async function (req, res) {
         }, {
           where: { soldierId }
         });
-        if ((currentSoldier.turnPos % 1).toFixed(2) != iterationCounter * turnLimit) {
+        SoldierModel.hasOne(CPRCountDownModel, { foreignKey: 'soldierId' })
+        CPRCountDownModel.belongsTo(SoldierModel, { foreignKey: 'soldierId' })
+        const topSoldier = await CPRCountDownModel.findOne({
+          limit: 1,
+          raw: true,
+          order: [
+            ['turnPos', 'ASC'],
+          ],
+          include: [{
+            model: SoldierModel,
+            where: {
+              dedicatedToCPR: false,
+              wasArrivedToCPRStation: false
+            }
+          }]
+        })
+        if (topSoldier && (currentSoldier.turnPos % 1).toFixed(2) != iterationCounter * turnLimit) {
           await SoldierModel.update({
             wasArrivedToCPRStation: 0,
             dedicatedToCPR: 0
