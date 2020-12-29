@@ -34,7 +34,7 @@ router.get('/:stageId/getSoldierDedicatedToStage', async function (req, res) {
 });
 
 router.put('/:stageId/removeSoldierFromStage', async function (req, res) {
-  const stageId = req.params.stageId;
+  const stageId = req.params.stageId -1;
   try {
     const [_, stage] = await StageDedicatedQueue.update({
       soldierId: null
